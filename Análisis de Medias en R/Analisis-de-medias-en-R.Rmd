@@ -1,0 +1,2035 @@
+---
+title: "Análisis de Medias en R"
+output:
+  html_document:
+    theme: united
+    number_sections: no
+    toc: yes
+    toc_float: yes
+    df_print: kable
+  pdf_document:
+    toc: yes
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+```{=html}
+<style type="text/css">
+  body{
+  font-size: 11.5pt;
+}
+</style>
+```
+\
+
+# Introducción:
+
+\
+
+Un analisis estadistico de medias consiste en el empleo de métodos de estadistica inferencial para analizar a nivel poblacional  la media de una o mas variables.
+
+En este articulo se hará una revisión de distintos metodos estadisticos
+para llevar a cabo un analisis de medias.
+
+Se recomienda haber leido previamente el siguiente articulo: https://rpubs.com/FabioScielzoOrtiz/Metodologia_Contrastes_de_Hipotesis
+
+\
+\
+
+# Contrastes de Hipotesis para la media de una variable en un grupo
+
+\
+
+
+## Objetivo
+
+\
+
+- Contrastar la media de una variable sobre una grupo/población. 
+
+  - Ejemplo: contrastar si la nota media en matematicas de los alumnos de cierto colegio es mayor que 7.
+
+\
+
+## Planteamiento formal del problema:
+
+\
+
+ 
+
+- Tenemos un **grupo/población**   $G=\lbrace e_{11}, e_{21},...,e_{N_{G,1}} \rbrace$ con \ $N_{G}$ \ elementos
+
+- Tenemos una **muestra**  $g$ de $n$ elementos de $G$ 
+
+
+\
+
+- Tenemos  variable estadistica **cuantitativa** $X_k$ medida sobre la muestra $g$ del grupo $G$:
+
+\begin{equation}
+X_{k, g}=(x_{1k} \ , \ x_{2k},..., \ x_{nk})^t 
+\end{equation}
+ 
+\
+
+*Observación:* \ \ $x_{ ik}$ es el valor de $X_k$ para el $i$-esimo individuo de la muestra $g$ del grupo $G$ sobre la que se ha medido $X_k$
+
+\
+
+- Desconocemos $X_k$ medida sobre el grupo/poblacion $G$, a la que denotaremos como $X_{k,{G}}$
+
+
+
+\
+
+**Observaciones:**
+
+- $X_{k,{G}}$ tiene la misma naturaleza que $X_k$  , en el sentido de que ambas son variables estadisticas. 
+
+- Pero se diferencia en que $X_{k,{G}}$ contiene los valores de la variable $X_k$ para los elementos de la **poblacion** $G$ , mientras que la $X_k$ **medida sobre la muestra** solo contiene los valores de la variable  $X_k$ para los elementos de una **muestra** $g$ de la población $G$
+
+
+- Los términos **poblacion** y **grupo** serán usados como sinonimos. 
+
+
+\
+
+Los **contrastes de hipotesis** que queremos resolver son del tipo:
+
+|                    |                    |                    |
+|:------------------:|:------------------:|:------------------:|
+| $H_0: \mu = \mu_0$ | $H_0: \mu = \mu_0$ | $H_0: \mu = \mu_0$ |
+| $H_1: \mu \neq \mu_0$  |  $H_1: \mu > \mu_0$ | $H_1: \mu < \mu_0$   |
+
+
+Donde:
+
+$\mu$ \ es la media (aritmética) de $X_{k,{G}}$ , es decir, $\mu = \overline{X}_{k,{G}}$ 
+
+Esta información ($\mu$) se desconoce, puesto que desconocemos $X_{k,{G}}$
+
+$\mu_0$ es un valor conocido.
+
+
+
+\
+
+\
+
+
+## T - test: Grupo/Población Normal
+
+\
+
+
+### Supuestos
+
+\
+
+-  $X_{k,{G}}$ tiene una distribucion normal, con media y desviación típica igual a la de la propia variable.
+
+   -   $X_{k,{G}} \sim N(\mu , \sigma)$
+
+\
+
+Donde: \ \ $\sigma= \sigma(X_{k,G})$
+
+\
+
+### Estadistico del contraste
+\
+
+- El estadistico del contraste es:
+
+\begin{equation*}
+t_{exp} = \dfrac{\overline{X_{k,g}} - \mu}{S(X_{k,g})/\sqrt{n}} \sim t_{n-1}
+\end{equation*}
+
+\
+
+- El estadistico del contraste **bajo** \ $H_0: \mu = \mu_0$ es:
+
+\begin{equation*}
+t_{exp | H_0} = \dfrac{\overline{X_{k,g}} - \mu_0}{S(X_{k,g})/\sqrt{n}} \sim t_{n-1}
+\end{equation*}
+
+\
+
+Donde: \ \ $S(X_{k,g})=\dfrac{n}{n-1} \cdot \sigma(X_{k,g})$ \ es la cuasidesviación típica de $X_{k,g}$
+
+
+\
+
+### p-valor
+\
+
+- Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu > \mu_0$
+  
+  \
+
+    - $pvalor=P \left( \underset{  \ v.a. \ \sim \ t_{n-1}}{\underbrace{t_{exp|H_0}}} > \underset{  \ observacion}{\underbrace{t_{exp|H_0}}} \right) = P \left( t_{n-1} > \dfrac{\overline{X_{k,g}} - \mu_0}{S(X_{k,g})/\sqrt{n}} \right)$ 
+
+\
+
+- Caso \ $H_0: \mu = \mu_0$ \ vs  \ $H_1: \mu <  \mu_0$
+
+  \
+   - $pvalor=P \left( \underset{  \ v.a. \ \sim \ t_{n-1}}{\underbrace{t_{exp|H_0}}} < \underset{  \ observacion}{\underbrace{t_{exp|H_0}}} \right) = P \left( t_{n-1} < \dfrac{\overline{X_{k,g}} -     \mu_0}{S(X_{k,g})/\sqrt{n}} \right)$ 
+
+
+\
+
+- Caso $H_0: \mu = \mu_0$ vs  $H_1: \mu  \neq  \mu_0$
+  
+  \
+     - $pvalor=P \left( \mid \underset{\ v.a.\ \sim \ t_{n-1}}{\underbrace{t_{exp|H_0}}} \mid \ > \underset{  \ observacion}{\underbrace{\mid t_{exp|H_0} \mid}} \right) =  P \left(  \underset{  \ v.a.}{\underbrace{t_{exp|H_0}}}  \ > \underset{  \ observacion}{\underbrace{\mid t_{exp|H_0} \mid}} \right) + P \left(  \underset{  \ v.a.}{\underbrace{t_{exp|H_0}}}  \ <  - \underset{ observacion}{\underbrace{\mid t_{exp|H_0} \mid}} \right) \\ \\ \\ \underset{simetria \ t}{\underbrace{=}}  P \left(  t_{n-1}  \ > \underset{  \ observacion}{\underbrace{\mid t_{exp|H_0} \mid}} \right) +P \left(  t_{n-1}  \ > \underset{  \ observacion}{\underbrace{\mid t_{exp|H_0} \mid}} \right) = 2 \cdot P \left( t_{n-1} > \left|      \dfrac{\overline{X_{k,g}} - \mu_0}{S(X_{k,g})/ \sqrt{n} } \right| \right)$ 
+
+\
+
+\
+
+### Regla de decisión
+
+\
+
+#### Basada en el estadistico del contraste
+
+\
+
+Para un nivel de significación $\alpha$ : 
+
+\
+
+- Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu > \mu_0$
+
+\
+
+\begin{equation*}
+Rechazar H_0  \ \Leftrightarrow \  \underset{  \ observacion}{\underbrace{t_{exp|H_0}}}  > t_{n-1}^{\alpha} \ \ \Leftrightarrow \ \ \dfrac{\overline{X_{k,g}} - \mu_0}{S(X_{k,g})/\sqrt{n}} > t_{n-1}^{\alpha} \ \ \Leftrightarrow \ \  \overline{X_{k,g}} > \mu_0 + t_{n-1}^{\alpha} \cdot S(X_{k,g})/\sqrt{n}
+\end{equation*}
+
+\
+
+Donde: \ \ $P(t_{n-1} > t_{n-1}^{\alpha}) = \alpha$
+
+
+\
+\
+
+- Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu < \mu_0$
+
+\
+
+\begin{equation*}
+Rechazar H_0 \ \Leftrightarrow \ t_{exp | H_0} < t_{n-1}^{1-\alpha} \ \ \Leftrightarrow \ \ \dfrac{\overline{X_{k,g}} - \mu_0}{S(X_{k,g})/\sqrt{n}} < t_{n-1}^{1-\alpha} \ \ \Leftrightarrow \ \  \overline{X_{k,g}} < \mu_0 + t_{n-1}^{1-\alpha} \cdot S(X_{k,g})/\sqrt{n}
+\end{equation*}
+
+\
+\
+
+-  Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu \neq \mu_0$
+
+\
+
+\begin{equation*}
+Rechazar H_0 \ \Leftrightarrow \ t_{exp | H_0} >  t_{n-1}^{\alpha/2} \ \ ó \ \ t_{exp | H_0} <  t_{n-1}^{1-\alpha/2} \ \Leftrightarrow \ \ \overline{X_{k,g}} > \mu_0 + t_{n-1}^{\alpha/2} \cdot S(X_{k,g})/\sqrt{n} \ \ ó \ \  \overline{X_{k,g}} < \mu_0 + t_{n-1}^{1-\alpha/2} \cdot S(X_{k,g})/\sqrt{n}
+\end{equation*}
+
+
+\
+
+**Observaciones:**
+
+
+
+- Las reglas de decision en los contrastes de hipotesis son conservadoras, en el sentido de que, por ejemplo, en el caso  \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu > \mu_0$ \ se rechazará $H_0$ en favor de $H_1$  cuando $\overline{X_{k,g}}$ sea **suficientemente** mayor que $\mu_0$ , no vale que sea simplemente mayor que $\mu_0$.
+Este hecho se extrapola a todos los contrastes de hipotesis, y es importante tenerlo presente.
+
+
+\
+
+-  $P(Error \ Tipo \ I)=P(Rechazar \ H_0 \ | \ H_0) =  \alpha$ en todos los casos, veamoslo:
+
+\
+
+   - Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu > \mu_0$
+
+\
+
+\begin{equation*}
+P(RH_0 | H_0)=P( \underset{  \ v.a \ \sim \ t_{n-1}}{\underbrace{t_{exp|H_0}}}  > t_{n-1}^{\alpha})=P(t_{n-1} > t_{n-1}^\alpha)=\alpha
+\end{equation*}
+
+\
+
+   - Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu < \mu_0$
+
+
+\
+
+\begin{equation*}
+P(RH_0 | H_0)=P( \underset{  \ v.a \ \sim \ t_{n-1}}{\underbrace{t_{exp|H_0}}}  < t_{n-1}^{1-\alpha})=P(t_{n-1} < t_{n-1}^{1-\alpha})=\alpha
+\end{equation*}
+
+\
+
+   - Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu \neq \mu_0$
+
+\
+
+\begin{equation*}
+P(RH_0 | H_0)=P(\underset{  \ v.a \ \sim \ t_{n-1}}{\underbrace{t_{exp|H_0}}}  > t_{n-1}^{\alpha/2} \ \ ó \ \ \underset{  \ v.a \ \sim \ t_{n-1}}{\underbrace{t_{exp|H_0}}}  < t_{n-1}^{1-\alpha/2}) =P(t_{n-1} > t_{n-1}^{ \alpha/2} \ \ ó \ \ t_{n-1} < t_{n-1}^{1-\alpha/2})= \\ = P(t_{n-1} > t_{n-1}^{ \alpha/2})+P(t_{n-1} < t_{n-1}^{1-\alpha/2})=\alpha/2 + \alpha/2 =\alpha
+\end{equation*}
+
+\
+
+#### Basada en el p-valor
+
+\begin{equation*}
+Rechazar \ H_0 \ \Leftrightarrow \ pvalor < \alpha
+\end{equation*}
+
+
+\
+
+**Observación:**
+
+La regla de decisión basada en el p-valor se deduce de la regla de decision basada en el estadistico del contraste, veamoslo:
+
+\
+
+- Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu > \mu_0$
+
+\
+
+\begin{equation*}
+pvalor < \alpha \ \Leftrightarrow \ \  P(t_{n-1} > t_{exp|H0}) < \alpha \ \ \Leftrightarrow \ \ t_{exp|H0} > t_{n-1}^{\alpha} \ \ \Leftrightarrow \ \ Rechazar \ H_0
+ \end{equation*}
+
+
+\
+
+
+- Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu < \mu_0$
+
+\
+
+\begin{equation*}
+pvalor < \alpha \ \Leftrightarrow \ \  P(t_{n-1} < t_{exp|H0}) < \alpha \ \ \Leftrightarrow \ \ t_{exp|H0} < t_{n-1}^{1-\alpha} \ \ \Leftrightarrow \ \ Rechazar \ H_0
+ \end{equation*}
+
+
+\
+
+- Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu \neq \mu_0$
+
+\
+
+\begin{equation*}
+pvalor < \alpha \ \Leftrightarrow \ \  2\cdot P(t_{n-1} < \mid t_{exp|H0} \mid ) < \alpha  \ \Leftrightarrow \    P(t_{n-1} < \mid t_{exp|H0} \mid )  < \alpha/2 \ \ \Leftrightarrow \ \ \mid  t_{exp|H0}\mid > t_{n-1}^{\alpha/2} \ \ \Leftrightarrow \ \ \\  t_{exp|H0} >  t_{n-1}^{\alpha/2} \ \ ò \ \ t_{exp|H0} <  - t_{n-1}^{\alpha/2} \ \ \Leftrightarrow \ \   t_{exp|H0} >  t_{n-1}^{\alpha/2} \ \ ò \ \ t_{exp|H0} <   t_{n-1}^{1-\alpha/2}    \ \ \Leftrightarrow \ \ Rechazar \ H_0
+ \end{equation*}
+
+
+\
+
+**Observación:**
+
+Los razonamientos anteriores están basados en buena parte en propiedades básicas de la distribución t-student:
+
+![avatar](t-stu1.jpg)
+![avatar](t-stu2.jpg)
+![avatar](t-stu3.jpg)
+
+\
+
+\
+
+
+### T-test para Grupo/Poblacion Normal en R:
+
+\
+
+Cargamos los datos con los que vamos a trabajar, un data set con precios y otros datos de multitud de productos vendidos por la empresa Mercadona:
+```{r, message=FALSE}
+library(tidyverse)
+library(readr)
+
+Mercadona_Productos <- read_csv("Mercadona_Productos.csv")
+
+head(Mercadona_Productos)
+```
+\
+
+Filtramos para quedarnos solo con las variables categoria y el precio del producto, y dentro de la categoria solo con las cervezas con y sin alcohol.
+```{r}
+df<-Mercadona_Productos %>% select(category, name, reference_price, reference_unit ,insert_date) %>% 
+  filter(category =="cerveza" | category=="cerveza_sin_alcohol" )
+```
+
+\
+
+Creamos las variables muestrales *precios_cervezas* y *precios_cervezas_sin_alcohol*, que contienen los precios de una muestra de una población de  cervezas del Mercadona, con y sin alcohol, respectivamente. Ambas serán usadas en este trabajo, pero ahora nos centraremos en la primera.
+```{r}
+precios_cervezas <- (df %>% filter(category=="cerveza") %>% select(reference_price))$reference_price
+
+precios_cervezas_sin_alcohol <- (df %>% filter(category=="cerveza_sin_alcohol") %>% select(reference_price))$reference_price 
+```
+
+\
+
+Vamos a resolver el contraste $H_0: \mu = 1.5 \ \ vs \ \ H_1: \mu \neq 1.5$ ,  donde $\mu$ es la media de la variable *precios_cervezas* medida sobre un grupo/poblacion de cervezas del Mercadona.
+
+Para ello tenemos que suponer que la variable *precios_cervezas*  tiene una distribucion aproximadamente normal, para poder aceptar el supuesto de normalidad a nivel poblacional.
+
+Realmente este supuesto deberia de contrastarse, usando algun procedimiento estadistico como los que expongo en el siguiente articulo https://rpubs.com/FabioScielzoOrtiz/Analisis_de_Normalidad_en_R.
+
+Aqui no entraremos en este aspecto, nos limitaremos a aceptar el supuesto de normalidad.
+
+\
+
+Usamos la variable muestral disponible *precios_cervezas*  para resolver el contraste.
+
+
+Realizamos el contraste con la funcion **t.test** implementada en R:
+```{r}
+t.test(x=precios_cervezas  , alternative = "two.sided", mu=1.5 , conf.level = 0.99)
+```
+
+Esta salida nos da informacion relevante, como el valor del estadisitco del contraste ($t=51.728$) y el p-valor del contraste ($pvalor<2.2e-16$), asi como  el intervalo de confianza para $\mu$ a un nivel de confianza del $99\%$ (puede especificarse otro).
+
+Para un nivel de significacion $\alpha=0.05 > pvalor \simeq 0$ , se rechaza $H_0: \mu = 1.5$ en favor de  $H_1: \mu \neq 1.5$ 
+
+En general, para todo $\alpha >  pvalor \simeq 0$ , se rechaza $H_0: \mu = 1.5$ en favor de  $H_1: \mu \neq 1.5$ . Luego para todo nivel de significacion puede aceptarse que la media del precio de las cervezas del Mercadona es **distinta** de 1.5 €/L
+
+\
+
+Ahora mostraremos como realizar el contraste en R de manera "manual".
+
+Cálculo del estadistico del contraste manualmente:
+```{r}
+mu_0<-1.5
+n<-length(precios_cervezas)
+
+(mean(precios_cervezas)-mu_0)/(sd(precios_cervezas)/sqrt(n))
+```
+
+\
+
+Cálculo del pvalor manualmente:
+```{r}
+2*pt(abs(51.72781) , df=n-1, lower.tail = FALSE)
+```
+
+
+\
+
+ Vamos a resolver ahora el contraste $H_0: \mu = 1.5 \ \ vs \ \ H_1: \mu < 1.5$
+
+```{r}
+t.test(x=precios_cervezas  , alternative = "less", mu=1.5 , conf.level = 0.99)
+```
+Como $pvalor=1$ , para todo $\alpha \in (0,1)$ no se puede rechazar \ $H_0: \mu = 1.5$  \ en favor de  \  $H_1: \mu < 1.5$, luego no se puede aceptar que el precio medio de las cervezas del Mercadona sea **menor** que $1.5€/L$ 
+
+
+\
+
+Vamos a resolver ahora el contraste $H_0: \mu = 1.5 \ \ vs \ \ H_1: \mu > 1.5$
+```{r}
+t.test(x=precios_cervezas  , alternative = "greater", mu=1.5 , conf.level = 0.99)
+```
+Como \ $pvalor < 2.2 \cdot 10^{-16}$ , para todo $\alpha > 2.2 \cdot 10^{-16}$ se rechaza \ $H_0: \mu = 1.5$  \ en favor de  \  $H_1: \mu > 1.5$, luego para esos niveles de significación puede aceptarse que el precio medio de las cervezas del Mercadona es **mayor** que $1.5€/L$  
+
+\
+
+\
+
+## Z-test: Grupo/Población No necesariamente Normal
+
+
+\
+
+### Supuestos:
+
+\
+
+- $n$ tiene que ser grande ($n>30$)
+
+\
+
+
+### Estadistico del contraste
+
+\
+
+- El estadistico del contraste es:
+
+
+\begin{equation*}
+z_{exp} = \dfrac{\overline{X_{k,g}} - \mu}{S(X_{k,g})/\sqrt{n}} \sim_{TCL} N(0,1)
+\end{equation*}
+
+\
+
+- El estadistico del contraste **bajo** $H_0: \mu = \mu_0$ es:
+
+\
+
+\begin{equation*}
+z_{exp | H_0} = \dfrac{\overline{X_{k,g}} - \mu_0}{S(X_{k,g})/\sqrt{n}} \sim_{TCL} N(0,1)
+\end{equation*}
+
+\
+
+Donde: \ \ $S(X_{k,g})=\dfrac{n}{n-1} \cdot \sigma(X_{k,g})$ \ es la cuasidesviación típica 
+
+
+\
+
+### p-valor
+\
+
+- Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: >  \mu_0$
+  
+  
+  - $pvalor=P \left( \underset{  \  v.a. \ \sim \ N(0,1)}{\underbrace{ z_{exp|H_0}}} > \underset{  \ observacion}{\underbrace{z_{exp|H_0}}} \right)=P \left( N(0,1) > \dfrac{\overline{X_{k,g}} -             \mu_0}{S(X_{k,g})/\sqrt{n}} \right)$ 
+
+\
+
+- Caso \ $H_0: \mu = \mu_0$ \ vs  \ $H_1: \mu <  \mu_0$
+
+  \
+   - $pvalor=P \left( \underset{  \  v.a. \ \sim \ N(0,1)}{\underbrace{ z_{exp|H_0}}} < \underset{  \ observacion}{\underbrace{z_{exp|H_0}}} \right)=P \left( N(0,1) < \dfrac{\overline{X_{k,g}} -             \mu_0}{S(X_{k,g})/\sqrt{n}} \right)$ 
+
+
+\
+
+- Caso $H_0: \mu = \mu_0$ vs  $H_1: \mu  \neq \mu_0$
+  
+  \
+  - $pvalor=P \left(  \underset{v.a. \sim N(0.1)}{\underbrace{ \mid z_{exp|H_0} \mid }}  \ > \  \underset{   observacion}{\underbrace{\mid z_{exp|H_0} \mid  }}  \right) = P \left(  \underset{v.a.}{\underbrace{ z_{exp|H_0}}} \ > \ \underset{   observacion}{\underbrace{\mid z_{exp|H_0} \mid }}  \right) + P \left(  \underset{v.a.}{\underbrace{ z_{exp|H_0}}} \ < \ - \underset{   observacion}{\underbrace{\mid z_{exp|H_0} \mid }}  \right)  = \\ = P \left(  N(0,1) \ > \ \underset{   observacion}{\underbrace{\mid z_{exp|H_0} \mid }}  \right) + P \left(  N(0,1) \ > \ \underset{   observacion}{\underbrace{\mid z_{exp|H_0} \mid }}  \right) =2 \cdot P \left( N(0,1) > \left|      \dfrac{\overline{X_{k,g}} - \mu_0}{S(X_{k,g})/ \sqrt{n} } \right| \right)$ 
+
+\
+\
+
+### Regla de decisión
+
+\
+
+#### Basada en el estadistico del contraste
+
+\
+
+Para un nivel de significación $\alpha$ : 
+
+\
+
+- Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu > \mu_0$
+
+\
+
+\begin{equation*}
+Rechazar H_0  \ \Leftrightarrow \  \underset{  \ observacion}{\underbrace{z_{exp|H_0}}}  > z_{\alpha} \ \ \Leftrightarrow \ \ \dfrac{\overline{X_{k,g}} - \mu_0}{S(X_{k,g})/\sqrt{n}} > z_{\alpha} \ \ \Leftrightarrow \ \  \overline{X_{k,g}} > \mu_0 + z_{\alpha} \cdot S(X_{k,g})/\sqrt{n}
+\end{equation*}
+
+\
+
+Donde: \ \ $P(N(0,1) > z_\alpha) = \alpha$
+
+
+\
+
+- Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu < \mu_0$
+
+\
+
+\begin{equation*}
+Rechazar H_0 \ \Leftrightarrow \ z_{exp | H_0} < z_{1-\alpha} \ \ \Leftrightarrow \ \ \dfrac{\overline{X_{k,g}} - \mu_0}{S(X_{k,g})/\sqrt{n}} < z_{1-\alpha} \ \ \Leftrightarrow \ \  \overline{X_{k,g}} < \mu_0 + z_{1-\alpha}  \cdot S(v)/\sqrt{n}
+\end{equation*}
+
+\
+
+- Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu \neq \mu_0$
+
+\
+
+\begin{gather*}
+Rechazar H_0 \ \Leftrightarrow \ z_{exp | H_0} >  z_{\alpha/2}  \ \ ó \ \ z_{exp | H_0} <  z_{1-\alpha/2} \ \Leftrightarrow \ \    \dfrac{\overline{X_{k,g}} - \mu_0}{S(X_{k,g})/\sqrt{n}} > z_{\alpha/2} \ \ ó \ \ \dfrac{\overline{X_{k,g}} - \mu_0}{S(X_{k,g})/\sqrt{n}} < z_{1-\alpha/2}   \\ \\   \ \Leftrightarrow \ \  \overline{X_{k,g}} > \mu_0 + z_{\alpha/2} \cdot S(X_{k,g})/\sqrt{n} \ \ ó \ \  \overline{X_{k,g}} < \mu_0 + z_{1-\alpha/2} \cdot S(X_{k,g})/\sqrt{n}
+\end{gather*}
+
+
+\
+
+**Observaciones:**
+
+\
+
+$P(Error \ Tipo \ I)=P(Rechazar \ H_0 \ | \ H_0) =  \alpha$ \ en todos los casos, veamoslo:
+
+\
+
+- Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu > \mu_0$
+
+\
+
+\begin{equation*}
+P(RH_0 | H_0)=P( \underset{  \ v.a \ \sim \ N(0,1)}{\underbrace{z_{exp|H_0}}}  > z_{\alpha})=P(N(0,1) > z_{\alpha})=\alpha
+\end{equation*}
+
+\
+
+- Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu < \mu_0$
+
+
+\
+
+\begin{equation*}
+P(RH_0 | H_0)=P( \underset{  \ v.a \ \sim \ N(0,1)}{\underbrace{z_{exp|H_0}}}  < z_{1-\alpha})=P(N(0,1) < z_{1-\alpha})=\alpha
+\end{equation*}
+
+\
+
+- Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu \neq \mu_0$
+
+\
+
+\begin{equation*}
+P(RH_0 | H_0)=P(\underset{  \ v.a \ \sim \ N(0,1)}{\underbrace{z_{exp|H_0}}}  > z_{\alpha/2} \ \ ó \ \ \underset{  \ v.a \ \sim \ N(0,1)}{\underbrace{z_{exp|H_0}}}  < z_{1-\alpha/2}) =P(N(0,1) > z_{\alpha/2} \ \ ó \ \ N(0,1) < z_{1-\alpha/2}) \\ = P(N(0,1) > z_{\alpha/2})+P(N(0,1) < z_{1-\alpha/2})=\alpha/2 + \alpha/2 =\alpha
+\end{equation*}
+
+\
+
+**Observacion:**
+
+
+Este procedimiento puede extrapolarse facilmente a todos los contrastes de este articulo, pero no se volverá a repetir por simplicidad.
+
+
+
+
+
+\
+
+#### Basada en el p-valor
+
+\begin{equation*}
+Rechazar \ H_0 \ \Leftrightarrow \ pvalor < \alpha
+\end{equation*}
+
+
+\
+
+**Observación:**
+
+La regla de decisión basada en el p-valor se deduce de la regla de decision basada en el estadistico del contraste, veamoslo:
+
+\
+
+- Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu > \mu_0$
+
+\
+
+\begin{equation*}
+pvalor < \alpha \ \Leftrightarrow \ \  P(N(0,1) > z_{exp|H0}) < \alpha \ \ \Leftrightarrow \ \ z_{exp|H0} > z_{\alpha} \ \ \Leftrightarrow \ \ Rechazar \ H_0
+ \end{equation*}
+
+
+\
+
+
+- Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu < \mu_0$
+
+\
+
+\begin{equation*}
+pvalor < \alpha \ \Leftrightarrow \ \  P(N(0,1) < z_{exp|H0}) < \alpha \ \ \Leftrightarrow \ \ z_{exp|H0} < z_{1-\alpha} \ \ \Leftrightarrow \ \ Rechazar \ H_0
+ \end{equation*}
+
+\
+
+- Caso \  $H_0: \mu = \mu_0$  \ vs \ $H_1: \mu \neq \mu_0$
+
+\
+
+\begin{equation*}
+pvalor < \alpha \ \Leftrightarrow \ \  2\cdot P(N(0,1) < \mid z_{exp|H0} \mid ) < \alpha  \ \Leftrightarrow \    P(N(0,1)  < \mid z_{exp|H0} \mid )  < \alpha/2 \ \ \Leftrightarrow \ \ \mid  z_{exp|H0}\mid > z_{\alpha/2} \ \ \Leftrightarrow \ \ \\  z_{exp|H0} >  z_{\alpha/2} \ \ ò \ \ z_{exp|H0} <  - z_{\alpha/2} \ \ \Leftrightarrow \ \   z_{exp|H0} >  z_{\alpha/2} \ \ ò \ \ z_{exp|H0} <  z_{1-\alpha/2}    \ \ \Leftrightarrow \ \ Rechazar \ H_0
+ \end{equation*}
+
+
+\
+
+**Observación:**
+
+Los razonamientos anteriores están basados en buena parte en propiedades básicas de la distribución N(0,1)
+
+\
+
+\
+
+
+### Z-test en R:
+
+\
+
+ Vamos a resolver el contraste $H_0: \mu = 1.5 \ \ vs \ \ H_1: \mu \neq 1.5$ ,  donde $\mu$ es la media de la variable *precios_cervezas* medida sobre una poblacion de tipos de cervezas del Mercadona.
+
+Como la muestra que disponemos de la variable *precio_cervezas* es suficientemente grande ($n=15794>30$), **no** es necesario suponer que la variable *precios_cervezas* tiene una distribucion aproximadamente normal para aceptar el supuesto de normalidad a nivel poblacional.
+
+ 
+
+\
+
+Calculamos el estadistico del contraste:
+```{r}
+mu_0<-1.5
+n<-length(precios_cervezas)
+
+(mean(precios_cervezas)-mu_0)/(sd(precios_cervezas)/sqrt(n))
+```
+\
+
+Calculamos el pvalor:
+```{r}
+2*pnorm(abs(51.72781) , mean=0, sd=1, lower.tail = FALSE)
+```
+
+\
+
+ Vamos a resolver ahora el contraste $H_0: \mu = 1.5 \ \ vs \ \ H_1: \mu < 1.5$
+
+
+Calculamos el pvalor:
+```{r}
+pnorm(51.72781 , mean=0, sd=1, lower.tail = TRUE)
+```
+Como $pvalor=1$, para todo $\alpha \in (0,1)$ **no**  se puede rechazar \ $H_0: \mu = 1.5$ \ en favor de  \ $H_1: \mu < 1.5$, puesto que los datos no aportan suficiente evidencia en favor de $H_1$
+
+
+\
+
+ Vamos a resolver ahora el contraste $H_0: \mu = 1.5 \ \ vs \ \ H_1: \mu > 1.5$
+
+
+Calculamos el pvalor:
+```{r}
+pnorm(51.72781 , mean=0, sd=1, lower.tail = FALSE)
+```
+Para todo $\alpha > 0 = pvalor$  se  puede rechazar \ $H_0: \mu = 1.5$ \ en favor de  \ $H_1: \mu > 1.5$, puesto que los datos   aportan suficiente evidencia en favor de $H_1$
+
+
+\
+
+\
+
+
+
+# Contraste de hipotesis para la media de una variable en dos grupos independientes
+
+
+\
+
+## Objetivo
+
+\
+
+- Contrastar la media de una variable medida  sobre dos grupos independientes.
+
+  - Ejemplo: la nota media en matematicas de los alumnos (chicos) de cierto colegio es mayor que la de las alumnas (chicas), en ese mismo colegio.
+  
+\
+
+## Planteamiento formal del problema:
+
+\
+
+- Tenemos dos grupos:
+
+  - $G_1=\lbrace g_{11}, g_{21},...,g_{N_{G1},1} \rbrace$ 
+  - $G_2=\lbrace g_{12}, g_{22},...,g_{N_{G2},2} \rbrace$ 
+  
+  \
+
+- Tenemos una **muestra**  $g_1$ de $n_1$ elementos de $G_1$ 
+
+- Tenemos una **muestra**  $g_2$ de $n_2$ elementos de $G_2$ 
+
+\
+
+- Tenemos una  variable estadistica **cuantitativa** $X_k$ medida sobre la muestra $g_1$ del grupo $G_1$:
+
+\begin{equation}
+X_{k,g_1}=(x_{g_1, 1k}, x_{g_1, 2k},...,x_{g_1, n_1k})^t 
+\end{equation}
+
+- Tenemos esa misma variable estadistica **cuantitativa** $X_k$ pero medida sobre la muestra $g_2$ del grupo $G_2$:
+
+\begin{equation}
+X_{k,g_2}=(x_{g_2, 1k}, x_{g_2, 2k},...,x_{g_2, n_1k})^t 
+\end{equation}
+
+\
+
+Observación: \ $x_{g_j, ik}$ \ es el valor de $X_k$ para el $i$-esimo individuo de la muestra $g_i$ del grupo $G_i$ sobre la que se ha medido $X_k$
+
+\
+
+- Desconocemos $X_k$ medida sobre el grupo $G_1$, a la que denotaremos como $X_{k,{G_1}}$
+
+- Desconocemos $X_k$ medida sobre la poblacion $G_2$, a la que denotaremos como $X_{k,{G_2}}$
+
+
+
+\
+
+Los **contrastes de hipotesis** que queremos resolver son del tipo:
+
+|                    |                    |                    |
+|:------------------:|:------------------:|:------------------:|
+| $H_0: \mu_1 = \mu_2$ | $H_0: \mu_1 = \mu_2$ | $H_0: \mu_1 = \mu_2$ |
+| $H_1: \mu_1 \neq \mu_2$ | $H_1: \mu_1 > \mu_2$  | $H_1: \mu_1 < \mu_2$   |
+
+Donde:
+
+$\mu_1$ \ es la media de $X_{k,G_1}$ 
+
+$\mu_2$ \ es la media de $X_{k,G_2}$ 
+
+
+Esta información ($\mu_1$ y $\mu_2$) se desconoce.
+
+\
+
+\
+
+## T-test: Dos Grupos Normales Independientes
+
+
+
+\
+
+### Supuestos
+
+\
+
+-   $X_{k,G_1} \sim N(\mu_1 , \sigma_1)$
+
+-   $X_{k,G_2} \sim N(\mu_2 , \sigma_2)$
+
+
+-  $X_{k,G_1}$ y $X_{k,G_2}$ son independientes 
+
+    - $S(X_{k,G_1}, X_{k,G_2})=0$
+
+\
+
+### Estadistico del contraste:
+
+\
+
+-  Si $\sigma_1 = \sigma_2$
+
+\
+
+El estadistico del contraste es:
+
+\
+
+\begin{equation*}
+t_{exp} = \dfrac{(\overline{X}_{k,g_1}-\overline{X}_{k,g_2}) - (\mu_1 - \mu_2) }{\sqrt{\dfrac{(n_1-1)S(X_{k,g_1})^2 + (n_2-1)S(X_{k,g_2})^2}{n_1 + n_2 - 2}}\sqrt{\dfrac{1}{n_1} + \dfrac{1}{n_2}}} \sim t_{n_1+n_2-2}
+\end{equation*}
+
+\
+
+El estadistico del contraste **bajo** \ $H_0: \mu_1 = \mu_2$ \ es:
+
+\
+
+\begin{equation*}
+t_{exp} = \dfrac{(\overline{X}_{k,g_1}-\overline{X}_{k,g_2})  }{\sqrt{\dfrac{(n_1-1)S(X_{k,g_1})^2 + (n_2-1)S(X_{k,g_2})^2}{n_1 + n_2 - 2}}\sqrt{\dfrac{1}{n_1} + \dfrac{1}{n_2}}} \sim t_{n_1+n_2-2}
+\end{equation*}
+
+
+\
+\
+
+- Si $\sigma_1 \neq \sigma_2$
+
+\
+
+El estadistico del contraste es:
+
+\
+
+\begin{equation*}
+t_{exp} = \dfrac{(\overline{X_{k,g_1}}-\overline{X_{k,g_2}}) - (\mu_1 - \mu_2) }{\sqrt{\dfrac{S(X_{k,g_1})^2 }{n_1} + \dfrac{S(X_{k,g_2})^2}{n_2}}} \sim t_f
+\end{equation*}
+
+\
+
+El estadistico del contraste **bajo** \ $H_0: \mu_X = \mu_Y$ \ es:
+
+\
+
+\begin{equation*}
+t_{exp} = \dfrac{(\overline{X_{k,g_1}}-\overline{X_{k,g_2}})  }{\sqrt{\dfrac{S(X_{k,g_1})^2 }{n_1} + \dfrac{S(X_{k,g_2})^2}{n_2}}} \sim t_f
+\end{equation*}
+
+\
+
+Donde:  
+
+\begin{equation*}
+f= \dfrac{ \left( \dfrac{S(X_{k,g_1})^2 }{n_1} + \dfrac{S(X_{k,g_2})^2}{n_Y}  \right)^2 }{  \dfrac{1}{n_1-1}\left(\dfrac{S(X_{k,g_1})^2 }{n_1} \right)^2 + \dfrac{1}{n_2-1}\left(\dfrac{S(X_{k,g_2})^2}{n_2}\right)^2 }
+\end{equation*}
+
+\
+
+### p-valor
+
+\
+
+-  Si $\sigma_1 = \sigma_2$
+
+\
+
+- Caso \  $H_0: \mu_1 = \mu_2$  \ \ vs \ \ $H_1: \mu_1 > \mu_2$
+    
+  \
+    
+\begin{gather*}
+pvalor=P \left(  \underset{  \   \sim \ t_{n_1+n_2-2}}{\underbrace{t_{exp|H_0} } } >  \underset{    observación}{\underbrace{t_{exp|H_0} } }  \right) = P \left( t_{n_1+n_2-2} >  \dfrac{(\overline{X}_{k,g_1}-\overline{X}_{k,g_2})  }{\sqrt{\dfrac{(n_1-1)S(X_{k,g_1})^2 + (n_2-1)S(X_{k,g_2})^2}{n_1 + n_2 - 2}}\sqrt{\dfrac{1}{n_1} + \dfrac{1}{n_2}}}  \right)
+\end{gather*}
+
+\
+
+- Caso \ $H_0: \mu_1 = \mu_2$ \ vs  \ $H_1: \mu_1 <  \mu_2$
+
+  \
+      \begin{gather*}
+      pvalor=P \left(  \underset{  \   \sim \ t_{n_1+n_2-2}}{\underbrace{t_{exp|H_0} } } <  \underset{    observación}{\underbrace{t_{exp|H_0} } }  \right)  =P \left( t_{n_1+n_2-2} <  \dfrac{(\overline{X_{k,g_1}}-\overline{X_{k,g_2}})  }{\sqrt{\dfrac{(n_1-1)S(X_{k,g_1})^2 + (n_2-1)S(X_{k,g_2})^2}{n_1 + n_2 - 2}}\sqrt{\dfrac{1}{n_1} + \dfrac{1}{n_2}}}  \right)
+      \end{gather*} 
+
+
+\
+
+- Caso $H_0: \mu = \mu_0$ vs  $H_1: \mu_1  \neq \mu_2$
+  
+  \
+   \begin{gather*}  pvalor=P \left(  \underset{ \sim t_{n_1+n_2-2}}{\underbrace{ \mid t_{exp|H_0} \mid }}  \ > \  \underset{   observacion}{\underbrace{\mid t_{exp|H_0} \mid  }}  \right)= P \left(  t_{n_1+n_2-2} \ > \  \mid t_{exp|H_0} \mid   \right) + P \left(  t_{n_1+n_2-2} \ < \ - \mid t_{exp|H_0} \mid   \right)  = \\ \\
+   = P \left( t_{n_1+n_2-2} \ > \ \mid t_{exp|H_0} \mid   \right) + P \left( t_{n_1+n_2-2} \ > \  \mid t_{exp|H_0} \mid   \right)   = \\ \\
+    =2\cdot P \left( t_{n_1+n_2-2} > 
+      \left| \dfrac{(\overline{X_{k,g_1}}-\overline{X_{k,g_2}})  }{\sqrt{\dfrac{(n_1-1)S(X_{k,g_1})^2 + (n_Y-1)S(X_{k,g_2})^2}{n_1 + n_2 - 2}}\sqrt{\dfrac{1}{n_1} + \dfrac{1}{n_2}}} \right|  \right)
+  \end{gather*}    
+
+\
+
+\
+
+-  Si $\sigma_1 \neq \sigma_2$
+
+
+\
+
+- Caso \  $H_0: \mu_1 = \mu_2$  \ vs \ $H_1: \mu_1 > \mu_2$
+    
+  \
+    
+   \begin{gather*}
+    pvalor=P \left(  \underset{  \   \sim \ t_{f}}{\underbrace{t_{exp|H_0} } } >  \underset{    observación}{\underbrace{t_{exp|H_0} } }  \right) = P \left( t_{f} >  \dfrac{ ( \overline{X_{k,g_1}}-\overline{X_{k,g_2}} )  }{\sqrt{\dfrac{S(X_{k,g_1})^2 }{n_1} + \dfrac{S(X_{k,g_2})^2}{n_2}}}  \right)
+    \end{gather*}
+
+\
+
+- Caso \ $H_0: \mu_1 = \mu_2$ \ vs  \ $H_1: \mu_1 <  \mu_2$
+
+  \
+      \begin{gather*}
+      pvalor=P \left(  \underset{  \   \sim \ t_{n_1+n_2-2}}{\underbrace{t_{exp|H_0} } } <  \underset{    observación}{\underbrace{t_{exp|H_0} } }  \right)=P \left( t_{f} <   \dfrac{ ( \overline{X_{k,g_1}}-\overline{X_{k,g_2}} )  }{\sqrt{\dfrac{S(X_{k,g_1})^2 }{n_1} + \dfrac{S(X_{k,g_2})^2}{n_2}}}   \right)
+      \end{gather*}
+
+
+\
+
+- Caso $H_0: \mu = \mu_0$ vs  $H_1: \mu_1  \neq \mu_2$
+  
+  \
+    \begin{gather*}  pvalor=P \left(  \underset{ \sim t_{f}}{\underbrace{ \mid t_{exp|H_0} \mid }}  \ > \  \underset{   observacion}{\underbrace{\mid t_{exp|H_0} \mid  }}  \right)= P \left(  t_{f} \ > \  \mid t_{exp|H_0} \mid   \right) + P \left(  t_{f} \ < \ - \mid t_{exp|H_0} \mid   \right)  = \\ \\
+   = P \left( t_{f} \ > \ \mid t_{exp|H_0} \mid   \right) + P \left( t_{f} \ > \  \mid t_{exp|H_0} \mid   \right)   = \\ \\=2\cdot P \left( t_{f} > 
+      \left|  \dfrac{ ( \overline{X_{k,g_1}}-\overline{Y_k} )  }{\sqrt{\dfrac{S(X_{k,g_1})^2 }{n_1} + \dfrac{S(X_{k,g_2})^2}{n_2}}}  \right|  \right)  
+ \end{gather*}
+\
+
+
+
+
+
+### Regla de decisión:
+
+\
+
+#### Basada en el p-valor
+
+\
+
+\begin{equation*}
+Rechazar H_0 \Leftrightarrow pvalor < \alpha
+\end{equation*}
+
+
+
+\
+
+\
+
+
+###  T-test Dos Grupos Normales Independientes en R
+
+\
+
+Vamos a realizar en R el contraste $H_0: \mu_1 = \mu_2$ vs  $H_1: \mu_1  > \mu_2$ donde $\mu_1$ es el precio medio de las cervezas (con alcohol) del Mercadona y $\mu_2$ es el precio medio de las cervezas sin alcohol del Mercadona.
+
+\
+
+Para ello tenemos que suponer quela variable *precio* medida sobre la muestra disponible de cervezas con alcohol de Mercadona tiene una distribucion aproximadamente Normal, asi como la variable *precio* medida sobre la  muestra disponible de cervezas sin alcohol de Mercadona, para poder aceptar el supuesto de normalidad a nivel poblacional.
+
+Este supuesto deberia de contrastarse, usando algun procedimiento estadistico como los que expongo en el siguiente articulo https://rpubs.com/FabioScielzoOrtiz/Analisis_de_Normalidad_en_R.
+
+Aqui no entraremos en este aspecto, nos limitaremos a aceptar el supuesto de normalidad a nivel poblacional.
+
+Ademas asumiremos que las varianzas de las variables *precios_cervezas* y  *precios_cervezas_sin_alcohol* a nivel poblacional no son iguales. Aunque esto tambien deberia ser contrastado mediante un procedimiento adecuado.
+
+\
+
+Para resolver el contraste se usará la variable *precio* medida sobre las muestras de cervezas con y sin alcohol del Mercadona de las que disponemos, es decir, *precios_cervezas* y *precios_cervezas_sin_alcohol*. Asumiremos ademas
+```{r}
+t.test(x=precios_cervezas , y=precios_cervezas_sin_alcohol , alternative = "greater", paired=FALSE, var.equal = FALSE)
+```
+Como el $pvalor=2.2e-16$ , para todo $\alpha$ habitual (0.1, 0.05, 0.01) , al ser mayor que el pvalor,  se rechaza $H_0$ en favor de $H_1: \mu_1  > \mu_2$, luego puede aceptarse que el precio medio de las cervezas con alcohol del Mercadona es mayor que el de las cervezas sin alcohol.
+
+\
+
+Vamos a realizar en R el contraste $H_0: \mu_1 = \mu_2$ vs  $H_1: \mu_1  < \mu_2$
+donde $\mu_1$ es el precio medio de las cervezas (con alcohol) del Mercadona y $\mu_2$ es el precio medio de las cervezas sin alcohol del Mercadona.
+
+Para ello se usará la variable precio medida sobre las muestras de cervezas con y sin alcohol del Mercadona de las que disponemos (*precios_cervezas* y *precios_cervezas_sin_alcohol*).
+```{r}
+t.test(x=precios_cervezas , y=precios_cervezas_sin_alcohol , alternative = "less", paired=FALSE)
+```
+Como el $pvalor=1$ , para todo $\alpha$ habitual , al ser menor que el pvalor,  no se rechaza $H_0$ en favor de $H_1: \mu_1  < \mu_2$, luego no puede aceptarse que el precio medio de las cervezas con alcohol del Mercadona es menor que el de las cervezas sin alcohol.
+
+\
+
+
+Vamos a realizar en R el contraste $H_0: \mu_1 = \mu_2$ vs  $H_1: \mu_1  \neq \mu_2$
+donde $\mu_1$ es el precio medio de las cervezas (con alcohol) del Mercadona y $\mu_2$ es el precio medio de las cervezas sin alcohol del Mercadona.
+
+Para ello se usará la variable precio medida sobre las muestras de cervezas con y sin alcohol del Mercadona de las que disponemos (*precios_cervezas* y *precios_cervezas_sin_alcohol*).
+```{r}
+t.test(x=precios_cervezas , y=precios_cervezas_sin_alcohol , alternative = "two.sided", paired=FALSE)
+```
+Como el $pvalor< 2.2e-16$ , para todo $\alpha$ habitual , al ser mayor que el pvalor,  se rechaza $H_0$ en favor de $H_1: \mu_1  \neq \mu_2$, luego  puede aceptarse que el precio medio de las cervezas con alcohol del Mercadona es distitno que el de las cervezas sin alcohol.
+
+
+\
+
+
+## T-test: Dos Grupos No necesariamente Normales Independientes
+
+\
+
+
+### Supuestos
+
+- Tamaños **grandes** de las muestras $g_1$ y $g_2$ de los grupos $G_1$ y $G_2$, respectivamente
+
+   - $n_1 , n_2 > 30$
+   
+\
+
+-  $X_{k,G_1}$ y $X_{k,G_2}$ son **independientes** 
+
+    - $S(X_{k,G_1}, X_{k,G_2})=0$
+
+\
+
+### Estadistico del contraste:
+
+
+
+- El estadistico del contraste **bajo** \ $H_0: \mu_X = \mu_Y$ \ es:
+
+\
+
+\begin{equation*}
+z_{exp|H_0} = \dfrac{ ( \overline{X}_{k,g_1}-\overline{X}_{k,g_2} )  }{\sqrt{\dfrac{S(X_{k,g_1})^2 }{n_1} + \dfrac{S(X_{k,g_2})^2}{n_2}}} \sim_{TCL} N(0,1)
+\end{equation*}
+
+\
+
+### p-valor
+
+\
+
+- Caso \  $H_0: \mu_1 = \mu_2$  \ vs \ $H_1: \mu_1 > \mu_2$
+    
+  \
+    
+   \begin{gather*}
+    pvalor=P \left(  \underset{  \   \sim \ N(0,1)}{\underbrace{t_{exp|H_0} } } >  \underset{    observación}{\underbrace{z_{exp|H_0} } }  \right) = P \left( N(0,1) >  \dfrac{ ( \overline{X_{k,g_1}}-\overline{X_{k,g_2}} )  }{\sqrt{\dfrac{S(X_{k,g_1})^2 }{n_1} + \dfrac{S(X_{k,g_2})^2}{n_2}}}  \right)
+    \end{gather*}
+
+\
+
+- Caso \ $H_0: \mu_1 = \mu_2$ \ vs  \ $H_1: \mu_1 <  \mu_2$
+
+  \
+      \begin{gather*}
+      pvalor=P \left(  \underset{  \   \sim \ N(0,1)}{\underbrace{z_{exp|H_0} } } <  \underset{    observación}{\underbrace{z_{exp|H_0} } }  \right)=P \left( N(0,1) <   \dfrac{ ( \overline{X_{k,g_1}}-\overline{X_{k,g_2}} )  }{\sqrt{\dfrac{S(X_{k,g_1})^2 }{n_1} + \dfrac{S(X_{k,g_2})^2}{n_2}}}   \right)
+      \end{gather*}
+
+
+\
+
+- Caso $H_0: \mu = \mu_0$ vs  $H_1: \mu_1  \neq \mu_2$
+  
+  \
+    \begin{gather*}  pvalor=P \left(  \underset{ \sim N(0,1)}{\underbrace{ \mid z_{exp|H_0} \mid }}  \ > \  \underset{   observacion}{\underbrace{\mid z_{exp|H_0} \mid  }}  \right)= P \left(  N(0,1) \ > \  \mid z_{exp|H_0} \mid   \right) + P \left(  N(0,1) \ < \ - \mid z_{exp|H_0} \mid   \right)  = \\ \\
+   = P \left( N(0,1) \ > \ \mid z_{exp|H_0} \mid   \right) + P \left( N(0,1) \ > \  \mid z_{exp|H_0} \mid   \right)   = \\ \\=2\cdot P \left( N(0,1) > 
+      \left|  \dfrac{ ( \overline{X_{k,g_1}}-\overline{X_{k,g_2}} )  }{\sqrt{\dfrac{S(X_{k,g_1})^2 }{n_1} + \dfrac{S(X_{k,g_2})^2}{n_2}}}  \right|  \right)  
+ \end{gather*}
+
+\
+
+
+
+### Regla de decisión:
+
+\
+
+#### Basada en el p-valor
+
+\
+
+\begin{equation*}
+Rechazar H_0 \Leftrightarrow pvalor < \alpha
+\end{equation*}
+
+
+
+\
+
+\
+
+
+###  T-test Dos Grupos Independientes No necesariamente Normales  en R
+
+
+Vamos a realizar en R el contraste $H_0: \mu_1 = \mu_2$ vs  $H_1: \mu_1  > \mu_2$ donde $\mu_1$ es el precio medio de las cervezas (con alcohol) del Mercadona y $\mu_2$ es el precio medio de las cervezas sin alcohol del Mercadona.
+
+```{r}
+n1<-length(precios_cervezas)
+```
+```{r}
+n2<-length(precios_cervezas_sin_alcohol)
+```
+
+Como los tamaños de las muestras que tenemos de cervezas con y sin alcohol de Mercadona son suficientemente grandes ($n_1=15794>30$  , $n_2=2194 > 30$), **no** es necesario   suponer que la variable *precio* medida sobre esas muestras  tiene una distribucion aproximadamente Normal. Es decir, no es necesario el supuesto de normalidad a nivel poblacional.
+
+
+
+Para resolver el contraste se usará la variable *precio* medida sobre las muestras de cervezas con y sin alcohol del Mercadona de las que disponemos, es decir, *precios_cervezas* y *precios_cervezas_sin_alcohol*
+
+
+Calculamos el estadistico del contraste en este caso:
+```{r}
+(mean(precios_cervezas)-mean(precios_cervezas_sin_alcohol))/sqrt(var(precios_cervezas)/n1 + var(precios_cervezas_sin_alcohol)/n2)
+```
+```{r}
+pnorm(32.04022 , mean=0, sd=1, lower.tail = FALSE)
+```
+Como \ $pvalor= 1.502146e-225$, para los $\alpha$ habituales , al ser mayores que el pvalor, se rechaza $H_0$ en favor de $H_1: \mu_1  > \mu_2$. Luego, paea los $\alpha$ habituales puede aceptarse que el precio medio de las cervezas con alcohol del Mercadona es mayor que el de las cervezas sin alcohol. 
+
+
+
+
+
+
+\
+
+# Contraste de hipotesis para la media de una variable en dos grupos dependientes
+
+\
+
+## Objetivo
+
+- Contrastar la media de **dos** variables sobre una **mismo grupo** (o si se quiere, sobre **dos grupos iguales**)
+
+   - *Ejemplo*: contrastar si la nota media en matematicas es mayor que la nota media en lengua entre los estudiantes de cierto colegio
+  
+- Contrastar la media de una variable sobre **dos grupos pareados o emparejados** (tienen los mismos individuos , pero en diferentes condiciones/circustancias)
+
+   - *Ejemplo*: contrastar si la nota media en matematicas es menor en un grupo de estudiantes que no reciben clases de apoyo que en ese mismo grupo pero tras recibir clases de apoyo.
+
+
+\
+
+## Planteamiento formal del problema:
+
+\
+
+- Tenemos dos grupos:
+
+  - $G_1=\lbrace g_{11}, g_{21},...,g_{N_{G1},1} \rbrace$ 
+  - $G_2=\lbrace g_{12}, g_{22},...,g_{N_{G2},2} \rbrace$ 
+  
+  \
+
+- Tenemos una **muestra**  $g_1$ de $n_1$ elementos de $G_1$ 
+
+- Tenemos una **muestra**  $g_2$ de $n_2$ elementos de $G_2$ 
+
+\
+
+- Tenemos una  variable estadistica **cuantitativa** $X_k$ medida sobre la muestra $g_1$ del grupo $G_1$:
+
+\begin{equation}
+X_{k,g_1}=(x_{g_1, 1k}, x_{g_1, 2k},...,x_{g_1, n_1k})^t 
+\end{equation}
+
+- Tenemos esa misma variable estadistica **cuantitativa** $X_k$ pero medida sobre la muestra $g_2$ del grupo $G_2$:
+
+\begin{equation}
+X_{k,g_2}=(x_{g_2, 1k}, x_{g_2, 2k},...,x_{g_2, n_1k})^t 
+\end{equation}
+
+\
+
+Observación: \ $x_{g_j, ik}$ \ es el valor de $X_k$ para el $i$-esimo individuo de la muestra $g_i$ del grupo $G_i$ sobre la que se ha medido $X_k$
+
+\
+
+- Desconocemos $X_k$ medida sobre el grupo $G_1$, a la que denotaremos como $X_{k,{G_1}}$
+
+- Desconocemos $X_k$ medida sobre la poblacion $G_2$, a la que denotaremos como $X_{k,{G_2}}$
+
+\
+
+Hasta aqui el planteamiento del problema es el mismo que en el caso de dos grupos independientes.
+
+
+- La diferencia práctica esencial es que si los grupos $G_1$ y $G_2$ son dependientes , $G_1$ y $G_2$ son el **mismo grupo** (mismos individuos) o son **grupos pareados/emparejados** (mismos individuos, distintas condiciones o circustancias), ademas $N_1=N_2$ como consecuencia.
+
+- En cambio si los grupos $G_1$ y $G_2$ son independientes , $G_1$ y $G_2$ son grupos distintos (distintos individuos).
+
+
+\
+
+Los **contrastes de hipotesis** que queremos resolver son del tipo:
+
+|                    |                    |                    |
+|:------------------:|:------------------:|:------------------:|
+| $H_0: \mu_1 = \mu_2$ | $H_0: \mu_1 = \mu_2$ | $H_0: \mu_1 = \mu_2$ |
+| $H_1: \mu_1 \neq \mu_2$ | $H_1: \mu_1 > \mu_2$  | $H_1: \mu_1 < \mu_2$   |
+
+Donde:
+
+$\mu_1$ \ es la media (aritmética) de $X_{k,G_1}$ 
+
+$\mu_2$ \ es la media (aritmética) de $X_{k,G_2}$ 
+
+
+Esta información ($\mu_1$ y $\mu_2$) se desconoce.
+
+\
+
+\
+
+
+## T-test: Dos Grupos  Dependientes Normales 
+
+\
+
+### Supuestos
+
+\
+
+-  $n_1 = n_2$ \
+
+- $(X_{k,G_1}, X_{k,G_2})\sim N \left( \begin{pmatrix}
+\mu_1 \\
+\mu_2 
+\end{pmatrix} , \begin{pmatrix}
+\sigma^2_1  & \sigma_{12}\\
+\sigma_{21} & \sigma_2^2
+\end{pmatrix} \right)$
+
+Donde:
+
+$\sigma_{12}=S(X_{k,G_1} , X_{k,G_2})$ \ no necesariamente es $0$, es decir, no son necesariamente independientes.
+
+\
+
+### Distinguir en la practica una muestras de grupos dependientes de muestras de grupos independientes:
+
+\
+
+- Datos de salarios de 10 mujeres y 15 hombres $\Rightarrow$  muestras de grupos *independientes.*
+
+- Datos de calificaciones de los mismos 8 estudiantes
+en matemáticas y estadística  $\Rightarrow$ muestra de grupos *dependientes*.
+
+- Datos del número de parados en 20 ciudades de dos paises distintos $\Rightarrow$  muestras de grupos *independientes*.
+
+- Datos del peso de 32 pacientes antes y después de un tratamiento de adelgazamiento $\Rightarrow$ muestras de grupos *dependientes*.
+
+
+\
+
+
+### Estadistico del contraste
+
+\
+
+Se usa la transformación $D_{G_1,G_2}=X_{k,G_1} - X_{k, G_2} \sim N(\mu_{D_{G1, G2}} , \sigma_{D_{12}})$ \ , donde $\mu_{D_{G1, G2}}=\mu_1-\mu_2$ es la media de $D_{G_1,G_2}$
+
+
+\
+
+Con la transformacion los contrastes equivalentes a resolver ahora serian:
+
+|                    |                    |                    |
+|:------------------:|:------------------:|:------------------:|
+| $H_0: \mu_{D_{G1, G2}}= 0$ | $H_0: \mu_{D_{G1, G2}} = 0$ | $H_0: \mu_{D_{G1, G2}} = 0$ |
+| $H_1: \mu_{D_{G1, G2}} \neq 0$ | $H_1: \mu_{D_{G1, G2}} > 0$  | $H_1: \mu_{D_{G1, G2}} < 0 \mu_2$   |
+
+
+\
+
+Con la tranformacion ahora se tiene a nivel muestral los siguientes elementos:
+
+\begin{equation*}
+D_{g_1,g_2}=X_{k,g_1}-X_{k,g_2}=(x_{g_1,1k}-x_{g_2,1k} \ , \ x_{g_1,2k}-x_{g_2,2k} \ ,..., \ x_{g_1,n_1k}-x_{g_2,n_2k})
+\end{equation*}
+
+\begin{equation*}
+\overline{D}_{g_1,g_2} = \dfrac{1}{n} \sum_{i=1}^{n} (x_{g_1,ik}-x_{g_2,ik} ) 
+\end{equation*}
+
+
+Recordar que en este caso se supone \ $n_1 = n_2=n$  
+
+\
+
+El estadistico del contraste es:
+
+\begin{equation*}
+t_{exp}= \dfrac{\overline{D}_{g_1,g_2} - \mu_{D_{G1, G2}} }{S(D_{g_1,g_2})/\sqrt{n}} \sim t_{n-1}
+\end{equation*}
+
+
+\
+
+El estadistico del contraste bajo \ $H_0:\mu_{D_{G1, G2}}= 0$
+
+\begin{equation*}
+t_{exp}= \dfrac{\overline{D}_{g_1,g_2}}{S(D_{g_1,g_2})/\sqrt{n}} \sim t_{n-1}
+\end{equation*}
+
+\
+
+### p-valor
+
+\
+
+- Caso \  $H_0: \mu_{D_{G1, G2}}= 0$  \ \ vs \ \ $H_1:\mu_{D_{G1,G2}}> 0$
+    
+  \
+    
+    \begin{gather*}
+    pvalor=P \left(  \underset{  \   \sim \ t_{n-1}}{\underbrace{t_{exp|H_0} } } >  \underset{    observación}{\underbrace{t_{exp|H_0} } }  \right) = P \left( t_{n - 1} >    \dfrac{\overline{D}_{g_1,g_2}}{S(D_{g_1,g_2})/\sqrt{n}} \right)
+    \end{gather*}
+
+\
+
+- Caso \ $H_0: \mu_{D_{G1, G2}}= 0$  \ \ vs \ \ $H_1:\mu_{D_{G1,G2}}< 0$
+
+  \
+      \begin{gather*}
+    pvalor=P \left(  \underset{  \   \sim \ t_{n-1}}{\underbrace{t_{exp|H_0} } } <  \underset{    observación}{\underbrace{t_{exp|H_0} } }  \right) = P \left( t_{n - 1} <    \dfrac{\overline{D}_{g_1,g_2}}{S(D_{g_1,g_2})/\sqrt{n}} \right)
+    \end{gather*} 
+
+
+\
+
+- Caso \ $H_0: \mu_{D_{G1, G2}}= 0$  \ \ vs \ \ $H_1:\mu_{D_{G1,G2}} \neq 0$
+  
+  \
+   \begin{gather*}  pvalor=P \left(  \underset{ \sim t_{n-1}}{\underbrace{ \mid t_{exp|H_0} \mid }}  \ > \  \underset{   observacion}{\underbrace{\mid t_{exp|H_0} \mid  }}  \right)= P \left(  t_{n-1} \ > \  \mid t_{exp|H_0} \mid   \right) + P \left(  t_{n-1} \ < \ - \mid t_{exp|H_0} \mid   \right)  = \\ \\
+   = P \left( t_{n-1} \ > \ \mid t_{exp|H_0} \mid   \right) + P \left( t_{n-1} \ > \  \mid t_{exp|H_0} \mid   \right)   = \\ \\
+    =2\cdot P \left( t_{n-1} > 
+      \left| \dfrac{\overline{D}_{g_1,g_2}}{S(D_{g_1,g_2})/\sqrt{n}}  \right|  \right)
+  \end{gather*}  
+
+
+
+
+
+\
+
+### Regla de decisión:
+
+\
+
+#### Basada en el p-valor
+
+
+\
+
+
+\begin{equation*}
+Rechazar H_0 \Leftrightarrow pvalor < \alpha
+\end{equation*}
+
+\
+
+###  T-test Dos Grupos Dependientes Normales en R
+
+\
+
+Cargamos datos de dos grupos dependientes.
+
+Tenemos  dos grupos pareados o emparejados (actuando aqui como **muestras**):
+
+Un grupo de sujetos que se enfrentan a una prueba de esfuerzo sin usar una sustancia dopante, y el mismo grupo de sujetos que se vuelven a enfrentar a la prueba pero usando una sustancia dopante.
+
+Se mide en ambos grupos la variable *rendimiento*, la cual mide el rendimiento de los sujetos en la prueba de esfuerzo en una escala 0-10 , donde 0 es el minimo y 10 el maximo rendimiento.
+
+Los tamaños de los grupos son 35 sujetos. 
+```{r}
+library(DT)
+
+rendimiento <- c(5, 4, 7, 7 , 8, 5 , 9, 3, 5, 6, 5, 7, 8,2, 8, 5, 4, 7, 7 , 8, 5 , 9, 3, 5, 6, 5, 7, 8,  2, 8, 3, 2, 6, 7, 9,
+                 6, 7, 8, 7,  10, 7, 9, 5, 6, 7 ,7, 7, 9, 4, 9, 6, 7, 8, 7,  10, 7, 9, 5, 6, 7 ,7, 7, 9, 4, 9, 6, 5, 6, 9, 10) 
+
+grupo <- c(rep("No_Dopado", 35), rep("Dopado", 35))
+
+datos_rendimientos_grupos <- tibble(rendimiento , grupo) 
+
+datatable(datos_rendimientos_grupos , class = 'cell-border stripe')
+```
+
+\
+
+Vamos a realizar en R el contraste $H_0: \mu_1 = \mu_2$ vs  $H_1: \mu_1  > \mu_2$
+donde $\mu_1$ es el rendimiento medio en ese tipo de pruebas de esfuerzo si los sujetos no estan dopados y $\mu_2$ es el rendimiento medio es ese tipo de pruebas de esfuerzo si los mismos sujetos estan dopados.
+
+Para ello tenemos que suponer que la variable *rendimiento* medida sobre los dos grupos tiene una **distribucion normal** con media y varianza igual a la de la propia variable, como evidencia de normalidad a nivel poblacional. 
+
+Este supuesto deberia de contrastarse, usando algun procedimiento estadistico como los que expongo en el siguiente articulo https://rpubs.com/FabioScielzoOrtiz/Analisis_de_Normalidad_en_R.
+Aqui no entraremos en este aspecto, nos limitaremos a aceptar el supuesto de normalidad a nivel poblacional.
+
+
+Para realizar el contraste se usa la informacion disponible de variable *rendimiento* medida sobre los grupos de sujetos que realizan la prueba de esfuerzo, primero sin doparse, y luego dopados, que actuan como muestras:
+```{r}
+rendimiento_no_dopados <- (datos_rendimientos_grupos %>% filter(grupo=="No_Dopado") %>% select(rendimiento))$rendimiento
+
+rendimiento_dopados <- (datos_rendimientos_grupos %>% filter(grupo=="Dopado") %>% select(rendimiento))$rendimiento
+```
+
+Realizamos el contraste en R:
+```{r}
+t.test(x=rendimiento_no_dopados , y=rendimiento_dopados , alternative = "greater", paired=TRUE)
+```
+Como el $pvalor=1$ , para todo $\alpha$ habitual (0.1, 0.05, 0.01) , al ser menor que el pvalor,  no se rechaza $H_0$ en favor de $H_1: \mu_1  > \mu_2$, luego no puede aceptarse el rendimiento medio de los sujetos cuando no se dopan sea superior a cuando se dopan. 
+
+\
+
+Vamos a realizar en R el contraste $H_0: \mu_1 = \mu_2$ vs  $H_1: \mu_1  < \mu_2$
+donde $\mu_1$ es el rendimiento medio en ese tipo de pruebas de esfuerzo si los sujetos no estan dopados y $\mu_2$ es el rendimiento medio en ese tipo de pruebas de esfuerzo si los mismos sujetos estan dopados.
+
+Para ello se usa la informacion disponible de variable *rendimiento* medida en los grupos que actuan como muestras:
+```{r}
+t.test(x=rendimiento_no_dopados , y=rendimiento_dopados , alternative = "less", paired=TRUE)
+```
+Como el $pvalor=3.569e-05$ , para todo $\alpha>3.569e-05$, como el habitual $0.05$, al ser mayor que el pvalor,  se rechaza $H_0$ en favor de $H_1: \mu_1  < \mu_2$, luego para $\alpha>0.034$ puede aceptarse que el rendimiento medio de los sujetos cuando se dopan es superior a cuando no se dopan. 
+
+\
+
+
+Vamos a realizar en R el contraste $H_0: \mu_1 = \mu_2$ vs  $H_1: \mu_1  \neq \mu_2$
+donde $\mu_1$ es el rendimiento medio en ese tipo de pruebas de esfuerzo si los sujetos no estan dopados y $\mu_2$ es el rendimiento medio en ese tipo de pruebas de esfuerzo si los mismos sujetos estan dopados.
+
+Para ello se usa la informacion disponible de variable *rendimiento* medida en los grupos que actuan como muestras:
+```{r}
+t.test(x=rendimiento_no_dopados , y=rendimiento_dopados , alternative = "two.sided", paired=TRUE)
+```
+Como el $pvalor=7.138e-05$ , para todo $\alpha>7.138e-05$, como el habitual 0.05 , al ser mayor que el pvalor,  se puede rechazar $H_0$ en favor de $H_1: \mu_1  \neq \mu_2$, luego  puede aceptarse que el rendimiento medio de los sujetos cuando se dopan es diferente a cuando no se dopan. 
+
+
+\
+
+\
+
+## T-test: Dos Grupos Dependientes No necesariamente Normales 
+
+\
+
+### Supuestos
+
+\
+
+- Tamaños grandes de las muestras $g_1$ y $g_2$ de los grupos dependientes $G_1$ y $G_2$, respectivamente.
+
+   - $n_1 = n_2 = n > 30$ 
+
+
+\
+
+### Estadistico del contraste:
+
+\
+
+El estadistico del contraste bajo $H_0:\mu_{D_{G1, G2}}= 0$
+
+\begin{equation*}
+z_{exp|H_0}= \dfrac{\overline{D}_{g_1,g_2}}{S(D_{g_1,g_2})/\sqrt{n}} \sim_{TCL} N(0,1)
+\end{equation*}
+
+\
+
+### p-valor
+
+\
+
+- Caso \  $H_0: \mu_{D_{G1, G2}}= 0$  \ \ vs \ \ $H_1:\mu_{D_{G1,G2}}> 0$
+    
+  \
+    
+    \begin{gather*}
+    pvalor=P \left(  \underset{  \   \sim \ N(0,1)}{\underbrace{t_{exp|H_0} } } >  \underset{    observación}{\underbrace{z_{exp|H_0} } }  \right) = P \left( N(0,1) >    \dfrac{\overline{D}_{g_1,g_2}}{S(D_{g_1,g_2})/\sqrt{n}} \right)
+    \end{gather*}
+
+\
+
+- Caso \ $H_0: \mu_{D_{G1, G2}}= 0$  \ \ vs \ \ $H_1:\mu_{D_{G1,G2}}< 0$
+
+  \
+      \begin{gather*}
+    pvalor=P \left(  \underset{  \   \sim \ N(0,1)}{\underbrace{z_{exp|H_0} } } <  \underset{    observación}{\underbrace{z_{exp|H_0} } }  \right) = P \left( N(0,1) <    \dfrac{\overline{D}_{g_1,g_2}}{S(D_{g_1,g_2})/\sqrt{n}} \right)
+    \end{gather*} 
+
+
+\
+
+- Caso \ $H_0: \mu_{D_{G1, G2}}= 0$  \ \ vs \ \ $H_1:\mu_{D_{G1,G2}} \neq 0$
+  
+  \
+   \begin{gather*}  pvalor=P \left(  \underset{ \sim N(0,1)}{\underbrace{ \mid z_{exp|H_0} \mid }}  \ > \  \underset{   observacion}{\underbrace{\mid t_{exp|H_0} \mid  }}  \right)= P \left(  N(0,1) \ > \  \mid z_{exp|H_0} \mid   \right) + P \left(  N(0,1) \ < \ - \mid t_{exp|H_0} \mid   \right)  = \\ \\
+   = P \left(N(0,1) \ > \ \mid z_{exp|H_0} \mid   \right) + P \left( N(0,1) \ > \  \mid z_{exp|H_0} \mid   \right)   = \\ \\
+    =2\cdot P \left( N(0,1) > 
+      \left| \dfrac{\overline{D}_{g_1,g_2}}{S(D_{g_1,g_2})/\sqrt{n}}  \right|  \right)
+  \end{gather*}  
+
+
+
+
+
+\
+
+### Regla de decisión:
+
+\
+
+#### Basada en el p-valor
+
+
+\
+
+
+\begin{equation*}
+Rechazar H_0 \Leftrightarrow pvalor < \alpha
+\end{equation*}
+
+\
+
+###  T-test Dos Grupos Dependientes No necesariamente Normales en R
+
+\
+
+
+Vamos a realizar en R el contraste $H_0: \mu_{D_{G1,G2}}=\mu_1-\mu_2 = 0$ \ \ vs \ \  $H_1: \mu_{D_{G1,G2}}=\mu_1-\mu_2  > 0$
+donde $\mu_1$ es el rendimiento medio en ese tipo de pruebas de esfuerzo si los sujetos no estan dopados y $\mu_2$ es el rendimiento medio es ese tipo de pruebas de esfuerzo si los mismos sujetos estan dopados.
+
+Como los tamaños de los grupos dependientes son grandes $n_1=n_2=35 >30$ , ahora **no** es necesario suponer la normalidad de la variable *rendimiento* medida sobre los dos grupos, como evidencia de normalidad a nivel poblacional. 
+
+
+Realizamos el contraste en R.
+
+Calculamos el estadistico del contraste:
+```{r}
+D<- rendimiento_no_dopados - rendimiento_dopados
+D_media <- mean(D)
+D_sd <- sd(D)
+n<-length(D)
+
+D_media/(D_sd/sqrt(n))
+```
+
+
+Calculamos el pvalor del contraste:
+```{r}
+pnorm(-8.473669, mean=0, sd=1, lower.tail = FALSE)
+```
+Como \ $pvalor=1$, para cualquier $\alpha$ habitual, no se puede rechazar $H_0$ en favor de $H_1: \mu_{D_{G1,G2}}=\mu_1-\mu_2  > 0$. Luego, no puede aceptarse que el rendimiento medio en ese tipo de pruebas de esfuerzo cuando los sujetos no se dopan sea mayor que cuando se dopan.
+
+
+\
+
+\
+
+# Contraste de hipotesis para la media de una variable en multiples grupos independientes.
+
+
+
+\
+
+## Objetivo 
+\
+
+- Contrastar la media de una variable medida sobre de multiples grupos. 
+
+
+\
+
+## Planteamiento formal del problema:
+
+\
+
+- Tenemos $h$ grupos:
+
+\begin{gather*}
+G_1=\lbrace g_{11}, g_{21},...,g_{N_{G1},1} \rbrace \\  
+G_2=\lbrace g_{12}, g_{22},...,g_{N_{G2},2} \rbrace \\
+... \\
+G_h=\lbrace g_{1h}, g_{2h},...,g_{N_{G2},h} \rbrace 
+\end{gather*}
+
+\
+
+- Tenemos una **muestra**  $g_1$ de
+$n_1$ elementos de $G_1$ 
+
+- Tenemos una **muestra**  $g_2$ de
+$n_2$ elementos de $G_2$ 
+
+ \ \ \ \ ...
+
+- Tenemos una **muestra**  $g_h$ de
+$n_h$ elementos de $G_h$ 
+
+\
+
+- Tenemos una  variable estadistica **cuantitativa** $X_k$ medida sobre las $h$ muestras $g_1, g_2,...,g_h$ de los grupos $G_1, G_2,...,G_h$:
+
+\begin{equation}
+X_{k,g_j}=(x_{g_j, 1k}, x_{g_j, 2k},...,x_{g_j, n_jk})^t 
+\end{equation}
+
+para $j=1,2,...,h$
+
+\
+
+Observación: \ $x_{g_j, ik}$ \ es el valor de $X_k$ para el $i$-esimo individuo de la muestra $g_j$ del grupo $G_i$ sobre la que se ha medido $X_k$
+
+\
+
+- Desconocemos $X_k$ medida sobre el grupo $G_j$, a la que denotaremos como $X_{k,{G_j}}$ , para $j=1,2,...,h$
+
+
+\
+
+Los **contrastes de hipotesis** que queremos resolver son del tipo:
+
+|                    |                    |                    |
+|:------------------:|:------------------:|:------------------:|
+| $H_0: \mu_1 = \mu_2 = ... = \mu_h$ |
+| $H_1:  \mu_j \neq \mu_r \ \ , \ \exists \ j\neq r = 1,...,h$ |
+
+Donde:
+
+$\mu_j$ \ es la media de $X_{k,G_j}$ 
+
+
+
+Esta información ($\mu_1$,$\mu_2$,...,$\mu_h$) se desconoce.
+
+\
+
+\
+
+
+## ANOVA
+
+\
+
+### Supuestos
+
+\
+ 
+-  $X_{k,G_j} \sim N(\mu_j , \sigma)$ , para $j=1,...,h$
+
+  - Normalidad y Homocedasticidad (igualdad de varianzas) a nivel poblacional
+
+- Independiencia entre poblaciones/grupos
+
+\
+
+### Estadistico del contraste
+
+\
+
+Para calcular el estadistico del contraste primero se necesita calcular los siguientes parametros:
+
+- Media de la variable $X_{k,g_j}$:
+
+\begin{equation*}
+\overline{X}_{k,g_j} = \dfrac{1}{n_h} \cdot \sum_{i=1}^{n_h} x_{g_j, ik}
+\end{equation*}
+
+
+para $j=1,...,h$
+
+\
+
+- Media total:
+
+\begin{equation*}
+\overline{X}_k \ = \ \dfrac{1}{ n_1 + n_2+...+ n_h } \cdot \sum_{j=1}^{h} \sum_{i=1}^{n_j} x_{g_j, ik} \ = \\\ = \ \dfrac{1}{\sum_{j=1}^{h} n_j } \cdot \left(  \sum_{i=1}^{n_1} x_{g_1, ik}+ \sum_{i=1}^{n_2} x_{g_2, ik}+...+\sum_{i=1}^{n_3} x_{g_3, ik} \right)
+\end{equation*}
+
+\
+
+- Suma de Cuadrados Total (TSS):
+
+\begin{equation*}
+TSS=   \sum_{j=1}^{h} \sum_{i=1}^{n_j} \left(  x_{g_j, ik} - \overline{X}_k \right)^2
+\end{equation*}
+
+
+\
+
+
+- Suma de Cuadrados explixado por el Factor (FSS):
+
+\begin{equation*}
+FSS=   \sum_{j=1}^{h} \sum_{i=1}^{n_j} \left(  \overline{X}_{k,g_j} - \overline{X}_k \right)^2
+\end{equation*}
+
+
+\ 
+
+- Suma de Cuadrados Residual (RSS):
+
+\begin{equation*}
+RSS=   \sum_{j=1}^{h} \sum_{i=1}^{n_j} \left(  x_{g_j, ik} - \overline{X}_{k,g_j} \right)^2
+\end{equation*}
+
+
+\
+
+Se cumple que: \ \ $TSS=FSS+RSS$
+
+\
+\
+
+El **estadistico del contraste** bajo $H_0$ es :
+
+\begin{equation*}
+F_{exp|H_0}=\dfrac{FSS/(h-1)}{RSS/(n-h)} \sim F_{h-1, n-h}
+\end{equation*}
+
+Donde: \ $n=n_1+n_2+...+n_h$
+
+\
+
+### p-valor
+
+\
+
+El pvalor del contraste es:
+
+
+\begin{equation*}
+pvalor=P \left( F_{h-1, n-h} > \dfrac{FSS/(h-1)}{RSS/(n-h)} \right)
+\end{equation*}
+
+
+
+\
+
+### Regla de decisión:
+
+\
+
+#### Basada en el p-valor
+
+
+\
+
+
+\begin{equation*}
+Rechazar H_0 \Leftrightarrow pvalor < \alpha
+\end{equation*}
+
+\
+
+
+### ANOVA para analizar la influencia de un factor en una variable
+
+\
+
+El metodo ANOVA puede ser empleado para analizar la influencia de un factor (variable categorica) en una variable cuantitativa.
+
+Para ello los distintos grupos a considerar deben formarse/definirse en base a una variable categorica. De modo que cada grupo tiene asignada una categoria de la variable categorica y se diferencia entre sí a traves de ella.
+
+Por ejemplo: la variable categorica podria ser una serie de colores de un movil, cada grupo tendria asignado un color. Y lo que se quiere analizar podria ser la influencia del color del movil en la disposición de compra de los sujetos.
+
+\
+
+#### Tamaño del efecto 
+
+\
+
+Se define el tamaño del efecto del factor en la variable cuantitativa como:
+
+\begin{equation*}
+\eta^2=\dfrac{FSS}{TSS}
+\end{equation*}
+
+\
+
+**Criterio:**
+
+- Si $\eta^2 \in [0, 0.03]$  $\Rightarrow$   el efecto del factor sobre la variable es pequeño (poco significativo).
+
+- Si $\eta^2 \in (0.03, 0.14]$ $\Rightarrow$   el efecto del factor sobre la variable es moderado (moderadamente significativo).
+
+- Si $\eta^2 > 0.14$  $\Rightarrow$   el efecto del factor sobre la variable es grande (significativo).
+
+ \
+
+Para entender el coeficiente $\eta^2$  es necesario entender los elementos $FSS$, $RSS$ y $TSS$:
+
+
+- $\eta^2$ es la proporcion de variabilidad de la variable (cuantitativa) de interes explicada por el factor sobre su variabilidad total
+
+ 
+- FSS mide la variabilidad de la variable de interes entre los grupos, es decir, la distancia de las medias de la variable en cada grupo respecto de la media global.
+
+  - Si el valor de FSS es alto, significa que existe al menos un grupo en el que la media de la variable de interes es notablemente diferente de la media global de los grupos, lo que indica un comportamiento diferente de la variable en ese (o esos) grupo respecto de la media global de los grupos. 
+
+  - Si el valor de FSS es pequeño, significa que no existe ningun grupo en el que la media de la variable de interes sea notablemente diferente de la media global, lo que indica un comportamiento similar de la variable en todos los grupos.
+
+  - Por ello FSS se considera una medida de la cantidad de variabilidad de la variable de interes que es explicada por el factor. Cuanto mayor sea, mas variabilidad es explcada por el factor, y viceversa.
+
+
+- TSS mide la variabilidad total de la variable de interes, es decir, la distancia de las observaciones de la variable (sin atender al grupo) resepecto de la media global.
+
+- RSS mide la variabilidad de la variable de interes dentro de cada grupo, es decir, la distancia de las observaciones de la variable en cada grupo respecto de la media del grupo.
+
+
+\
+
+ 
+\
+
+
+## Test HSD de Tukey
+
+\
+
+
+Cuando se ha rechazado la hipótesis de igualdad de medias con el test ANOVA, el interés
+está en averiguar cuál o cuáles pares de medias son diferentes entre sí.
+
+Se podría pensar en realizar un t-test de igualdad de medias para cada par de variables.
+Pero el problema es que si realizamos múltiples contrastes de hipótesis se incrementa la
+probabilidad de cometer un error de tipo I.
+
+La solución es usar el test HSD (Honestly-significant-difference) de Tukey que es un test de
+comparaciones múltiples que contrasta simultáneamente para todos los pares (i; j) y que
+tiene en cuenta a todos los grupos para la realización del test (no solo a los dos grupos que
+entran en juego)
+
+
+El contraste que se lleva a cabo con el test de Tukey es:
+
+\begin{gather*}
+H_0: \mu_r = \mu_j \\
+H_1: \mu_r \neq \mu_j \\ \\
+\forall \ r \neq j = 1,...,h
+\end{gather*}
+
+
+\
+
+### Estadistico del contraste:
+
+\
+
+Para \ $H_0: \mu_r = \mu_j \ \ vs \ \ H_1: \mu_r \neq \mu_j$
+
+\begin{gather*}
+q_{exp|H_0}=\dfrac{\overline{X}_{k,g_r} - \overline{X}_{k,g_j}}{\dfrac{RSS}{(n-h)\sqrt{2}} \cdot \sqrt{1/n_r + 1/n_j }} \sim q_{h, n-h}
+\end{gather*}
+
+
+\
+
+### p-valor
+
+\
+
+Para \ $H_0: \mu_r = \mu_j \ \ vs \ \ H_1: \mu_r \neq \mu_j$
+
+\begin{gather*}
+pvalor=P \left( q_{h, n-h} > \dfrac{\overline{X}_{k,g_r} - \overline{X}_{k,g_j}}{\dfrac{RSS}{n-h}/\sqrt{2} \cdot \sqrt{1/n_r + 1/n_j }} \right)
+\end{gather*}
+
+\
+
+### Regla de decisión:
+
+\
+
+\begin{equation*}
+Rechazar H_0 \Leftrightarrow pvalor < \alpha
+\end{equation*}
+
+\
+
+## ANOVA y Test de Tukey en R:
+
+\
+
+
+Cargamos el data-set con el que expondremos la aplicacion del ANOVA en R.
+
+Imaginemos que Apple quiere analizar si el color de su nuevo Iphone influye en la decision de compra de los clientes potenciales.
+
+Tenemos 5 grupos independientes de individuos que tienen la intencion de comprar el nuevo Iphone, pero a cada grupo se le ofrece un color distinto (negro, blanco, azul, rojo, morado), y se les pide que indiquen en una escala del 1 al 10 su intencion de compra el nuevo Iphone pero con el color establecido.
+
+El tamaño de los grupos es 10, 15, 10, 20 y 13 respectivamente.
+
+Los datos disponibles son los siguientes:
+```{r}
+library(DT)
+
+grupos<- c(rep("negro", 10), rep("blanco", 15), rep("azul", 10), rep("rojo",13), rep("morado", 10))
+
+intencion_compra_Iphone <- 
+  c(8,9,7.5,8,7,6.5,8,9,8,7.7,
+    8,7,6,9,7,8.5,7.5,9,8.5,7,8.3,6.7,7.5,8,9,
+    7,6,8,7.5,8,8.5,9,7,6.5,7.5,
+    6,6.5,7,7.5,6,7,5.5,6,7.2,6,6.5,7.5,8,
+    8,9,8.5,8,7,7,8.5,9,7.5,9)
+
+Datos_Apple <- tibble(intencion_compra_Iphone, grupos)
+
+datatable(Datos_Apple , class = 'cell-border stripe')
+```
+
+Realizamos un ANOVA para contrastar si algun par de medias son significativamente diferentes entre si, y por tanto se puede rechazar $H_0$ en favor de $H_1$:
+```{r}
+ANOVA_resumen <- summary( aov(Datos_Apple$intencion_compra_Iphone ~ Datos_Apple$grupos) )
+
+ANOVA_resumen
+```
+La salida nos da informacion relevante para el ANOVA como:
+
+$pvalor=0.00085$ 
+
+$RSS=37.49$ \ , \  $FSS=15.65$ \ , \ $TSS = RSS+FSS = 37.49+15.65$
+
+Para cualquier $\alpha$ habitual, al ser mayor que el pvalor, se rechaza $H_0: \mu_1 = \mu_2=...=\mu_5$ \ en favor de que algun par de medias es diferente ($H_1$)
+
+Para hacernos una idea del por que del resultado del contraste, y de que pares de medias son las que difieren mas notablemente:
+```{r}
+Datos_Apple %>% group_by(grupos) %>% summarise(mean(intencion_compra_Iphone))
+```
+
+Realizamos el test de Tukey para contrastar que pares de medias son significativamente diferentes:
+```{r}
+anova <- aov(Datos_Apple$intencion_compra_Iphone ~ Datos_Apple$grupos)
+
+TukeyHSD(anova)
+```
+Teniendo en cuenta los pvalores obtenidos, para los $\alpha$ habituales, se aprecian diferencias significativas entre las medias de la variable *intencion de compra* para los grupos asociados al Iphone de color rojo y morado, asi como  rojo y negro, y tambien rojo y blanco.
+
+Luego, para los $\alpha$ habituales, puede aceptarse que $\mu_{rojo}\neq \mu_{morado}$\ , \  $\mu_{rojo}\neq \mu_{negro}$ \ y \ $\mu_{rojo}\neq \mu_{blanco}.$
+
+\
+
+Hacemos un grafico box-plot para evidenciar graficamente estas diferencias, en el que la linea azul marca la media de intención de compra del Iphone según el grupo-color:
+
+```{r, message=FALSE}
+ggplot(data=as.data.frame(Datos_Apple), aes( x = grupos, y= intencion_compra_Iphone , fill=grupos)) + 
+  geom_boxplot(  color = 'black') + 
+  stat_summary(fun=mean, geom="crossbar", shape=2, size=0.3, color="blue")+
+  xlab("Intención compra Iphone") + 
+  ggtitle("Box-plot intención compra Iphone por grupos")+
+  scale_y_continuous(n.breaks = 12)
+```
+
+
+
+\
+
+Ahora vamos a analizar el tamaño del efecto del factor (color del  Iphone) sobre la variable de interes (intencion de compra sobre el Iphone). Para ello calculamos el coeficiente $\eta^2$ :
+```{r}
+FSS<- 15.65
+RSS<- 37.49
+TSS<-FSS+RSS
+
+(eta_2 <- FSS/TSS)
+```
+El tamaño del efecto es grande, al ser $\eta^2 > 14$ 
+
+Se puede concluir que hay un **gran** efecto del color del Iphone (factor) sobre la intencion de compra del propio Iphone (variable cuantitativa de interes). Es decir, el color del Iphone produce un efecto importante (**influye significativamente**) en la intencion de compra de los clientes potenciales.
+
+Una forma autamatizada de calcular $\eta^2$ en R es la siguiente:
+```{r}
+library(lsr)
+etaSquared(anova)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
