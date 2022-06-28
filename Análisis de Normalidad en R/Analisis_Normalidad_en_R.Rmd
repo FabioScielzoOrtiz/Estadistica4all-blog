@@ -1,0 +1,1103 @@
+---
+title: "Análisis de Normalidad en R"
+output:
+  word_document:
+    toc: yes
+  html_document:
+    theme: united
+    number_sections: no
+    toc: yes
+    toc_float: yes
+    df_print: kable
+  pdf_document:
+    toc: yes
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+```{=html}
+<style type="text/css">
+  body{
+  font-size: 11.5pt;
+}
+</style>
+```
+
+\
+
+# Introducción:
+
+\
+
+Los **análisis de normalidad** tienen como objetivo analizar si la
+distribución de frecuencias (relativas) de una variable cuantitativa en
+un poblacion es una distribución Normal con la misma media y desviación
+típica que la variable.
+
+
+Pueden diferenciarse tres grandes métodos para analizar la normalidad: los basados en representaciones gráficas, los basados en métodos analíticos
+y los basados en contrastes de hipótesis.
+
+\
+
+## Planteamiento formal del problema
+
+\
+
+- Consideremos una **población** o grupo de referencia \ $G=\lbrace e_1, e_2,...,e_N \rbrace$ 
+
+
+- Tenemos una **muestra** \ $g = \lbrace \epsilon_1,\epsilon_2,...,\epsilon_n \rbrace$ de
+$n$ elementos de $G$ tal que:
+
+```{=tex}
+\begin{equation*}
+\forall \ i=1,...,n , \ \ \exists ! \  j=1,...,N , \ \ \varepsilon_i = e_j
+\end{equation*}
+```
+
+\
+
+- Nos centramos en variables **cuantitativas**
+
+- $X_{k,G}$ \ es la variable $X_k$ medida sobre la poblacion $G$
+
+- $X_k=(x_{1k},...,x_{nk})^t$ \ es la variable $X_k$ medida sobre la muestra $g$ de $G$, \ lo cual implica que $x_{ik}$ es el valor de $X_k$ para $\epsilon_i$
+
+- Conocemos $X_k$ pero no $X_{k,G}$
+
+ 
+ \
+ 
+*Observación*
+ 
+Se podria usar la notacion $X_{k,g}$ para denotar a $X_k$ medida sobre la muestra $g$ , pero se ha optado por usar simplemente $X_k$ por simplificar y seguir una notacion mas estandar.
+ 
+\
+
+
+- **Principio Básico:**
+
+Se aceptará que la  distribución de  $X_{k,G}$ es una distribución Normal  solo si hay evidencia estadistica significativa en los datos muestrales a favor de ello.
+
+Es decir:
+
+> Se acepta que la  distribución de  $X_{k,G}$ es una distribución Normal 
+ \ $\Leftrightarrow$ \  $X_k$ tiene una distribucion *significativamente* Normal.
+
+\
+
+Este principio se basa en la idea de los contrastes de hipotesis, para aceptar una hipotesis estadistica a nivel poblacional tiene que haber suficiente evidencia de que esa hipotesis se cumple a nivel muestral. Cuanta mas evidencia haya en los datos muestrales, más facil será aceptar la hipotesis.
+
+\
+
+ Cada metodo que aqui veremos define un criterio para determinar si la distribucion de $X_k$ es significativamente Normal, y por tanto hay  evidencia estadsitica significativa como para aceptar que $X_{k,G}$ tiene una distribucion Normal.  
+ 
+\
+
+\
+
+# Análisis Gráfico
+
+\ 
+
+## Método del Histograma
+
+\
+
+Este metodo sigue el siguiente criterio: 
+
+ $X_k$ tiene una distribucion *significativamente* Normal \ $\Leftrightarrow$ \ 
+ El perfil (la forma) del histograma de $X_k$ es **aproximadamente igual** a la curva de densidad de una v.a. $N(\overline{X_k}, \sigma(X_k))$ 
+
+
+
+\
+
+
+El metodo del histograma para analizar normalidad consiste en lo siguiente:
+
+
+1.  Se representa el **histograma** de $X_k$ 
+
+2.  Se superpone la **curva de densidad** de una v.a.
+    $N(\overline{X_k}, \sigma(X_k))$ al histograma representado en el
+    paso anterior.
+
+3.  Si el perfil del  **histograma**  y la **curva de densidad normal**  son **aproximadamente iguales** \ $\Rightarrow$ \ $X_k$ tiene una distribucion *significativamente* Normal \ $\Rightarrow$ \ hay evidencia estadistica significativa de que la distribucion de $X_{k,G}$ es una distibución Normal. Y si no, no.
+
+\
+
+**Problemas:**
+
+El punto 3 es particularmente problematico,  puesto que este método es un método eminentemente visual, y no se especifica un criterio objetivo para determinar cuando el perfil del histograma y la curva de densidad normar son "aproximadamente iguales". Es tarea del analista decidir sobre esta cuestión.
+
+\
+
+### Método del Histograma en R
+
+Cargamos los datos con los que expondremos los ejemplos en R:
+
+```{r, message=FALSE}
+library(readr)
+
+Altura_por_Paises_2022 <- read_csv("Height of Male and Female by Country 2022.csv")
+
+head(Altura_por_Paises_2022)
+```
+
+\
+
+Generamos el histograma de la variable "Male Height in Cm"
+y superponemos la curva de densidad de una v.a Normal con media y
+desviacion típica iguales a la de la varible "Male Height in Cm":
+
+```{r, message=FALSE}
+library(tidyverse)
+
+ ggplot(data = Altura_por_Paises_2022, mapping = aes(x = Altura_por_Paises_2022$`Male Height in Cm`)) + 
+  
+  geom_histogram(aes(y =..density..), color="black", fill="bisque3", position = 'identity', bins = 45) +
+  
+  stat_function(
+    fun = dnorm, 
+    args = list(mean = mean(Altura_por_Paises_2022$`Male Height in Cm`), sd = sd(Altura_por_Paises_2022$`Male Height in Cm`)), 
+    lwd = 1, 
+    col = 'red2' ) +
+  
+  scale_y_continuous( n.breaks = 15 )+
+  scale_x_continuous(n.breaks = 15)+
+  labs(x = "Male Height in Cm", y = "Frecuencia Relativa")
+
+
+```
+
+Segun mi criterio (realizando aqui la funcion del analista), el perfil del histograma y la curva de densidad normal no son aproximadamente iguales, hay demasiada diferencia como para considerar que $X_k$ tiene una distribucion significativamente normal. Por lo que no habria evidencia estadistica significativa como para aceptar que $X_{k,G}$ tiene una distribucion normal.
+
+
+\
+
+Generamos otro grafico como el anterior, pero usando como intervalos los obtenidos a traves de la regla de Scott (ver en https://rpubs.com/FabioScielzoOrtiz/Estadistica_Descriptiva_en_R ), que en este caso son menos intervalos que los del gráfico anterior.
+```{r}
+s=sd(Altura_por_Paises_2022$`Male Height in Cm`)
+n=length(Altura_por_Paises_2022$`Male Height in Cm`)
+max=max(Altura_por_Paises_2022$`Male Height in Cm`)
+min=min(Altura_por_Paises_2022$`Male Height in Cm`)
+
+#Amplitud teorica
+At = 3.5*s*n^-(1/3) 
+
+#Numero de intervalos
+lambda = ceiling((max-min)/At) 
+
+#Amplitud de los intervalos
+A = ceiling((max-min)/lambda) 
+
+#Primer extremo
+L1 = min
+
+#Vector con los extremos de los intervalos
+L = L1 + 0:lambda * A  
+```
+
+
+```{r, message=FALSE}
+library(tidyverse)
+
+ggplot(data = Altura_por_Paises_2022, mapping = aes(x = Altura_por_Paises_2022$`Male Height in Cm`)) + 
+  
+  geom_histogram(aes(y =..density..), color="black", fill="bisque3", position = 'identity', breaks=L) +
+  
+  stat_function(
+    fun = dnorm, 
+    args = list(mean = mean(Altura_por_Paises_2022$`Male Height in Cm`), sd = sd(Altura_por_Paises_2022$`Male Height in Cm`)), 
+    lwd = 1.5, 
+    col = 'red2' ) +
+  
+  scale_y_continuous( n.breaks = 15 )+
+  scale_x_continuous(n.breaks = 15)+
+  labs(x = "Male Height in Cm", y = "Frecuencia Relativa")
+```
+Se puede ver que al reducir el numero de intervalos el perfil del histograma se aproxima mas a la curva de densidad normal.
+
+\
+
+Veamos ahora cual sería el resultado si simulamos valores de un v.a. Normal con media y desviación típica igual a la media y desviación tipica de la variable "Male Height in Cm", y representamos su histograma, y ademas superponemos la curva normal como hicimos antes.
+
+```{r, message=FALSE, df_print=tibble}
+set.seed(123)
+
+df<- tibble(  Variable_Normal_Simulada = rnorm(n=200000, mean=mean(Altura_por_Paises_2022$`Male Height in Cm`), sd=sd(Altura_por_Paises_2022$`Male Height in Cm`)) )
+
+knitr::kable(head(df) , align="c")
+```
+
+```{r, message=FALSE}
+ggplot(data = df , mapping = aes(x = rnorm(n=200000, mean=mean(Altura_por_Paises_2022$`Male Height in Cm`), sd=sd(Altura_por_Paises_2022$`Male Height in Cm`)))) + 
+  
+  geom_histogram(aes(y =..density..), color="black", fill="bisque3", position = 'identity', bins=) +
+   
+  stat_function(
+    fun = dnorm, 
+    args = list(mean = mean(rnorm(n=15000, mean=mean(Altura_por_Paises_2022$`Male Height in Cm`),            sd=sd(Altura_por_Paises_2022$`Male Height in Cm`))), sd = sd(rnorm(n=15000, mean=mean(Altura_por_Paises_2022$`Male Height in Cm`), sd=sd(Altura_por_Paises_2022$`Male Height in Cm`)))), 
+    lwd = 2, 
+    col = 'red2'
+  )+
+  
+  scale_y_continuous( n.breaks = 15 )+
+  scale_x_continuous(n.breaks = 15)+
+  labs(x = "Variable Normal Simulada", y = "Frecuencia Relativa")
+```
+
+En este caso es claro que el perfil del historama y la curva de densidad normal son aproximadamente iguales, como era de esperar. 
+
+\
+
+**Observaciones:**
+
+1.  Este es un método visual y muy aproximado, en el sentido de que
+    depende del analista determinar si la curva de densidad normal se
+    asemeja lo suficiente al perfil del histograma de la variable
+    considerada como para considerarlos aproximadamente iguales.
+
+2.  Este método es aplicable a otras distribuciones mas allá de la
+    distribución Normal. El metodo es el mismo pero cambiando la curva
+    de densidad Normal por la de la distribución que se quiera analizar
+
+
+
+\
+
+
+
+## Gráfico Q-Q-Norm
+
+\
+
+Este metodo sigue el siguiente criterio: 
+
+ $X_k$ tiene una distribucion *significativamente* Normal \ $\Leftrightarrow$ \  Los cuantiles de la variable $X_k$ son **aproximadamente iguales** a los cuantiles de una v.a. $N(\overline{X_k}   ,  \sigma(X_k))$
+
+\
+
+El metodo del grafico Q-Q-Norm para analizar normalidad consiste en lo siguiente:
+
+
+1.  Se representa el  grafico **Q-Q-Norm** de $X_k$ 
+
+2.   Si  los **puntos rojos** están **proximos** a la **recta negra** \ $\Rightarrow$ \  Los cuantiles de la variable $X_k$ son **aproximadamente iguales** a los cuantiles de una v.a. $N(\overline{X_k}   ,  \sigma(X_k))$ \ $\Rightarrow$ \ $X_k$ tiene una distribucion *aproximadamente* Normal \ $\Rightarrow$ \ Hay evidencia estadistica significativa de que la distribucion de $X_{k,G}$ es una distibución Normal. Y si no, no.
+
+   
+
+
+\
+
+Para entender este criterio primero hay que entender lo que es un gráfico Q-Q-Norm.
+
+\
+
+### Gráfico Q-Q-Norm en R
+
+```{r,message=FALSE}
+ggplot(Altura_por_Paises_2022, aes(sample =  Altura_por_Paises_2022$`Male Height in Cm`) ) +
+
+  stat_qq( color="red2") + stat_qq_line(color="black", size=0.6) +
+    
+    scale_y_continuous( n.breaks = 15 )+
+    scale_x_continuous(n.breaks =20)+
+    xlab("Cuantiles teoricos N(0,1)")+
+    ylab("Cuantiles variable Altura Media Hombres por Paises")  
+```
+
+\
+
+-   La **recta negra** representada en el grafico Q-Q-Norm es tal que los puntos de esta recta son de la forma  $( x , y )$ , donde: 
+  \begin{equation*}
+    x=Q(p \ ,\ N(0,1))  \ , \  y=Q \left( p \ ,\  N(\overline{X_k},    \sigma(X_k)) \right)  \ , \ con \  p \in [0,1] 
+        \end{equation*} 
+        \
+
+    -   Por ejemplo:   Como sabemos que  $Q(0.5 , N(0,1))=0$ , entonces
+        el punto de la linea negra que esta sobre el valor 0 en el **eje
+        x** es
+         $( \ 0 \ , \ Q ( \ 0.5 \ , \ N(\overline{X_k}, \sigma(X_k)) \ ) \ ) = ( \ 0 \ , \ \overline{X_k} \ )$
+
+\
+
+-   Los puntos rojos representados en el gráfico son de la forma  $( x , y )$ , donde: 
+     \begin{equation*}
+    x= Q( p , N(0,1) ) \ , \  y=Q(p, X_k)
+      \end{equation*}
+      \
+
+    -   Por ejemplo:   Como sabemos que  $Q(0.5 , N(0,1))=0$ , entonces
+        el punto rojo que esta sobre el valor 0 en el **eje x** es
+        \ $(0, Q(0.5 , X_k)) = (0, Mediana(X_k) )$
+
+\
+
+-   Las propiedades anteriores anteriores implican que:
+
+      - un **punto rojo**  estará sobre la **recta negra** \ $\Leftrightarrow$ \ $Q(p , X_k)=Q \left( p \ ,\  N(\overline{X_k}, \sigma(X_k)) \right)$ \ \ , con \ $p \in [0,1]$
+
+\
+
+El analisis de Normalidad basado en los graficos Q-Q-Norm se basa en
+esta última conclusión. El criterio antes expuesto tiene su fundamento
+teorico en este último hecho.
+
+Como consideramos que el entendimiento de los graficos Q-Q-Norm es algo
+complicado, al menos en un principio, se va a desarrollar otro grafico
+mas intuitivo, a mi juicio, que tambien puede usarse para realizar un
+análisis de normalidad.
+
+\
+
+## Grafico de Cuantiles Comparados
+
+\
+
+Este gráfico es una reformulacion del grafico Q-Q-Norm con una interpretacion visual mas sencilla, a mi parecer.
+
+Es un gráfico de puntos tal que para cada \ $p \in \mathit{A} \subset [0,1]$ \ se grafica el par de puntos $x=\left( p , Q(p, X_k)\right)$ \ y \ $y= ( p , Q(p, N(\overline{X_k}, \sigma(X_k))) )$
+
+Lo interesante de este grafico es que es facil ver visualmente si los
+cuantiles de la variable $X_k$ estan o no próximos a los cuantiles de una v.a. Normal con media y desviación tipica igual a la de la variable de interés.
+
+\
+
+Este metodo sigue el siguiente criterio: 
+
+ $X_k$ tiene una distribucion *significativamente* Normal \ $\Leftrightarrow$ \  Los cuantiles de la variable $X_k$ son **aproximadamente iguales** a los cuantiles de una v.a. $N(\overline{X_k}   ,  \sigma(X_k))$
+ 
+ 
+\
+
+
+El metodo del grafico de Cuantiles Comparados para analizar normalidad consiste en lo siguiente:
+
+
+1.  Se representa el  grafico de cuantiles comparados para $X_k$ 
+
+2.   Si  los dos tipos de puntos (diferenciados por colores) estan generalmente **proximos** \ $\Rightarrow$ \ Los cuantiles de la variable $X_k$ son **aproximadamente iguales** a los cuantiles de una v.a. $N(\overline{X_k}   ,  \sigma(X_k))$ \ $\Rightarrow$ \ $X_k$ tiene una distribucion *significativamente* Normal \ $\Rightarrow$ \ Hay evidencia estadistica significativa de que la distribucion de $X_{k,G}$ es una distibución Normal. Y si no, no.
+
+
+\
+
+### Grafico de Cuantiles Comparados en R
+
+\
+
+Vamos a realizar este grafico para dos casos particulares de
+$\mathit{A}$.
+
+1. $\mathit{A} =$ seq(0, 1 , by=0.05)  
+
+```{r}
+cuantiles_normales <- quantile(rnorm(2000000 , mean=mean(Altura_por_Paises_2022$`Male Height in Cm`), sd=sd(Altura_por_Paises_2022$`Male Height in Cm`)) , seq(0, 1 , by=0.05) )
+
+cuantiles_variable <- quantile( Altura_por_Paises_2022$`Male Height in Cm` ,  seq(0, 1 , by=0.05))
+
+orden_cuantiles <- c(seq(0, 1 , by=0.05), seq(0, 1 , by=0.05) )
+cuantiles <- c(cuantiles_normales , cuantiles_variable)
+
+dff<-tibble( orden_cuantiles , cuantiles, tipo=c(rep("Normal", length(cuantiles_normales)) , rep("Variable", length(cuantiles_variable))) )
+
+knitr::kable(head(df) , align="c")
+```
+
+```{r}
+ggplot(data = dff , aes(x = orden_cuantiles, y = cuantiles, color = tipo))+
+  
+  geom_point( ) +
+  
+  scale_y_continuous( n.breaks = 15 )+
+    scale_x_continuous(n.breaks =15)+
+    xlab("Orden del cuantil")+
+    ylab("Cuantiles") +
+  scale_color_manual(breaks = c("Normal", "Variable"),
+                        values=c("red", "black" ))
+```
+
+\
+
+En este caso $X_k=$"Male Height in Cm"
+
+Los puntos rojos son
+$( \ p \ , \  Q(p, N(\overline{X_k}, \sigma(X_k))) \ )$,  para $p \in$
+seq(0, 1 , by=0.05)
+
+Los puntos negros son $( \ p , Q(p, X_k) \ )$,  para $p \in$ seq(0, 1 ,
+by=0.05)
+
+\
+
+Como puede verse hay bastante similitud entre los cuantiles de la variable de interés y los de la variable normal simulada con media y desviacion tipica igual a la de la variable de interés.
+
+\
+
+2. $\mathit{A} =$ seq(0, 1 , by=0.005) \ (Se representarán muchos mas cuantiles en este caso)  
+
+```{r}
+cuantiles_normales <- quantile(rnorm(2000000 , mean=mean(Altura_por_Paises_2022$`Male Height in Cm`), sd=sd(Altura_por_Paises_2022$`Male Height in Cm`)) , seq(0, 1 , by=0.005) )
+
+cuantiles_variable <- quantile( Altura_por_Paises_2022$`Male Height in Cm` ,  seq(0, 1 , by=0.005))
+
+orden_cuantiles <- c(seq(0, 1 , by=0.005), seq(0, 1 , by=0.005) )
+
+cuantiles <- c(cuantiles_normales , cuantiles_variable)
+
+df<-tibble( orden_cuantiles , cuantiles, tipo=c(rep("Normal", length(cuantiles_normales)) , rep("Variable", length(cuantiles_variable))) )
+
+knitr::kable(head(df) , align="c")
+```
+
+```{r}
+ggplot(data = df , aes(x = orden_cuantiles, y = cuantiles, color = tipo))+
+  
+  geom_point( ) +
+  
+  scale_y_continuous( n.breaks = 15)+
+    scale_x_continuous(n.breaks =15)+
+    xlab("Orden del cuantil")+
+    ylab("Cuantiles") +
+  scale_color_manual(breaks = c("Normal", "Variable"),
+                        values=c("red", "black" ))
+```
+
+\
+
+En este caso $X_k=$"Male Height in Cm"
+
+Los puntos rojos son $( \ p , Q(p, N(\overline{X_k}, \sigma(X_k))) \ )$,
+para $p \in$ seq(0, 1 , by=0.005)
+
+Los puntos negros son $( \ p , Q(p, X_k) \ )$, para $p \in$ seq(0, 1 ,
+by=0.005)
+
+\
+
+Como puede verse hay bastante similitud entre los cuantiles de la variable de interés y los de la variable normal simulada con media y desviacion tipica igual a la de la variable de interés. Por lo que segun este metodo podria considerarse que la distribucion de $X_k$ es significativamente Normal, y con ello aceptarlo a nivel poblacional.
+
+\
+
+**Observación:**
+
+```{r}
+seq(0, 1 , by=0.05)
+```
+
+```{r}
+seq(0, 1 , by=0.005)[1:25]
+```
+
+
+\
+
+## Gráfico de Comparación de Frecuencias Relativas
+
+\
+
+Vamos a generar un grafico en el que puedan compararse las frecuencias relativas de la variable de interes y una variable normal simulada con misma media y desviacion tipica que la variable de interés. 
+
+
+\
+
+Este metodo sigue el siguiente criterio: 
+
+ $X_k$ tiene una distribucion *significativamente* Normal \ $\Leftrightarrow$ \  Las frecuencias relativas de la variable $X_k$ son **aproximadamente iguales** a las frecuencias relativas de una v.a. $N(\overline{X_k}   ,  \sigma(X_k))$
+ 
+ 
+\
+
+
+El metodo del gráfico de comparación de frecuencias relativas para analizar normalidad consiste en lo siguiente:
+
+
+1.  Se representa el  grafico  de comparación de frecuencias relativas para $X_k$ 
+
+2.   Si  los dos tipos de puntos (diferenciados por colores) estan generalmente **proximos** \ $\Rightarrow$ \ Las frecuencias relativas de la variable $X_k$ son **aproximadamente iguales** a las  de una v.a. $N(\overline{X_k}   ,  \sigma(X_k))$ \ $\Rightarrow$ \ $X_k$ tiene una distribucion *significativamente* Normal \ $\Rightarrow$ \ Hay evidencia estadistica significativa de que la distribucion de $X_{k,G}$ es una distibución Normal. Y si no, no.
+
+
+
+
+###  Gráfico de Comparación de Frecuencias Relativas en R
+
+
+Para ello usaremos la siguiente funcion, que fue creada a proposito de mi articulo https://rpubs.com/FabioScielzoOrtiz/Estadistica_Descriptiva_en_R , la cual permite calcular las frecuencias relativas de una variable en una serie de intervalos, entre otras cosas:
+```{r}
+Tabla_Frecuencias  <- function(X, V1 ,p1 ){
+
+tabla<- matrix(NA, nrow=p1+1, ncol= 4 )
+X<- cbind(X, V1)
+
+for(i in 0:p1){
+
+  tabla[i+1, 1 ] <-  dim( ( X  %>% filter(V1==i ) ) )[1]  
+}
+
+for(i in 0:p1){
+   
+  tabla[i+1, 2 ] <- ( dim( ( X  %>% filter(V1==i ) ) )[1] / dim(X)[1] )
+}
+
+for(i in 0:p1){
+
+  tabla[i+1, 3] <- cumsum(tabla[1:(i+1) ,1])[i+1]
+}
+
+for(i in 0:p1){
+   
+  tabla[i+1, 4] <- cumsum(tabla[1:(i+1) ,2])[i+1]
+}
+
+ rownames(tabla)<-0:p1
+ colnames(tabla)<-c("F.Abs","F.Rel", "F.Abs.Cum","F.Rel.Cum")
+ 
+ tabla <- as.data.frame(tabla)
+ 
+ return(tabla) 
+}
+```
+
+
+Creamos 45 intervalos, que son con los que categorizaremos la variable cuantitativa de interés (Altura_Hombres), para ello usamos la regla de Scott modificada (ver en https://rpubs.com/FabioScielzoOrtiz/Estadistica_Descriptiva_en_R) que permite elegir el numero de intervalos:
+```{r}
+Altura_Hombres <- Altura_por_Paises_2022$`Male Height in Cm`
+
+s=sd(Altura_Hombres)
+n=length(Altura_Hombres)
+max=max(Altura_Hombres)
+min=min(Altura_Hombres)
+
+#Numero de intervalos --> 45
+
+#Amplitud de los intervalos
+A = ceiling((max-min)/45) 
+
+#Primer extremo
+L1 = min - 5
+
+#Vector con los extremos de los intervalos
+( L = L1 + 0:45 * A  )
+```
+
+
+Calculamos las frecuencias relativas 
+```{r,}
+set.seed(666)
+
+variable_normal <- rnorm(200000, mean = mean(Altura_Hombres), sd = sd(Altura_Hombres))
+
+a<-(cut(variable_normal, breaks = L , include.lowest = T,  labels=F))
+
+variable_normal_categorizada <- a-1
+
+df<- data.frame(variable_normal_categorizada)
+
+Frecuencias_Relativas_Normal <- Tabla_Frecuencias(df, variable_normal_categorizada, p1=44)$F.Rel
+
+df2<- data.frame(Frecuencias_Relativas_Normal, intervalo=1:45)
+
+##########################################################################################################
+
+b<-(cut(Altura_Hombres, breaks = L , include.lowest = T,  labels=F))
+
+altura_hombres_categorizada <- b-1
+
+df3<- data.frame(altura_hombres_categorizada)
+
+Frecuencias_Relativas_Altura_Hombres <- Tabla_Frecuencias(df3, altura_hombres_categorizada, p1=44)$F.Rel
+
+##########################################################################################################
+
+df_completo <- data.frame( Frecuencias_Relativas=c(Frecuencias_Relativas_Altura_Hombres, Frecuencias_Relativas_Normal), intervalo=rep(1:45, 2), tipo=c(rep("Variable de interes",45),rep("Variable Normal",45)))
+```
+
+
+```{r, message=FALSE}
+library(tidyverse)
+
+ggplot(data = df_completo, aes(y=Frecuencias_Relativas, x=intervalo, color=tipo)) +
+
+  geom_point()+
+  
+  geom_line()+
+
+  scale_y_continuous( n.breaks = 15 )+
+  scale_x_continuous(n.breaks = 15)+
+  labs(x = "Intervalos", y = "Frecuencia Relativa")
+```
+
+En el grafico se pueden ver las frecuencias relativas de la variable cuantitativa de interes (Altura_Hombres) y la variable Normal simulada , en los **mismos** intervalos.  Esto permite analizar visualmente la disparidad o semejanza de las frecuencias relativas en el caso de la variable original frente al caso de que la variable tuviese distribucion normal.
+
+Queda a ojo del analista decidir si las frecuencias relativas de la variable de interes y la variable normal estan suficientemente proximas como para considerarlas aproximadamente iguales y con ello considerar que la variable de interes tiene una distribucion significativamente normal.
+
+
+\
+
+\
+
+# Métodos Analíticos:
+
+\
+
+## Coeficiente de Asimetria
+
+\
+
+El coeficiente de asimetria de Fisher de la variable cuantitativa $X_k$
+es:
+
+```{=tex}
+\begin{gather*}
+Asimetria(X_k) = \dfrac{\overline{x_{k}}_{3}}{\sigma(X_k)^{3}}
+\end{gather*}
+```
+donde: \begin{gather*}
+\overline{x_{k}}_{3}=\dfrac{1}{n}\sum_{i=1}^{n} (x_{ik})^{3} 
+\end{gather*}
+
+\
+
+### Propiedades del coeficiente de asimetria
+
+\
+
+El **coeficiente de asimetria de Fisher** mide el **grado de simetria**
+de la distribucion de frecuencias de una variable respecto de su
+media aritmética.
+
+-   Si $Asimetria(X_k) > 0$ $\Rightarrow$ la distribución de $X_k$ es
+    **asimétrica a la derecha**.
+
+-   Si $Asimetria(X_k) <0$ $\Rightarrow$ la distribución de $X_k$ es
+    **asimétrica a la izquierda**.
+
+-   Si la distribución es **simétrica** respecto de la media
+    $\Rightarrow$ $Asimetria(X_k)=0$ . Pero el recíproco no es cierto.
+
+\
+
+### Criterio para normalidad:
+
+\
+
+Sea $X_k$ una variable estadistica,
+
+-   Si la distribucion de frecuencias de $X_k$ es Normal   $\Rightarrow$
+     $Asimetria(X_k)=0$
+
+-   Si $Asimetria(X_k)\neq 0$  $\Rightarrow$   la distribucion de frecuencias de $X_k$ no es Normal.
+
+\
+
+En base a lo anterior se establece el siguiente criterio de normalidad:
+
+\
+ 
+
+-   Si $\mid Asimetria(X_k) \mid \hspace{0.1cm} \in \left[0, 1.5 \right]$
+     $\Rightarrow$   $X_k$ tiene una distribucion **significativamente**   Normal    $\Rightarrow$ \ Hay evidencia estadistica significativa de que la distribucion de $X_{k,G}$ es una distibución Normal. 
+  
+
+ 
+-   Si $\mid Asimetria(X_k) \mid \hspace{0.1cm} > 1.5$    $\Rightarrow$   $X_k$ **no** tiene una distribucion significativamente  Normal    $\Rightarrow$ \ **No** hay evidencia estadistica significativa de que la distribucion de $X_{k,G}$ sea una distibución Normal. 
+
+\
+
+*Observación:*
+
+Estos criterios pueden modificarse para hacerlos mas o menos conservadores.
+
+\
+
+### Asimetria en R
+
+```{r}
+library(moments)
+
+skewness(Altura_por_Paises_2022$`Male Height in Cm`)
+```
+Podemos concluir que hay evidencia estadisitica de que la distribucion de frecuencias de la variable de interes es una distribucion aproximadamente Normal con media y varianza igual a la de la variable de interes.
+
+\
+
+Si simulamos una variable normal se obtiene el siguiente resultado:
+
+```{r}
+library(moments)
+
+set.seed(666)
+
+skewness(rnorm(n=200000, mean=mean(Altura_por_Paises_2022$`Male Height in Cm`), sd=sd(Altura_por_Paises_2022$`Male Height in Cm`))) 
+```
+Como era de esperar el valor obtenido es prácticamente 0, lo que indica que la distribucion de frecuencias de la variable normal simulada es efectivamente una distribucion Normal.
+
+
+\
+
+## Coeficiente de Curtosis
+
+\
+
+El **coeficiente de curtosis** de la variable cuantitativa $X_k$ es:
+
+```{=tex}
+\begin{gather*}
+Curtosis(X_k) = \dfrac{\overline{x_k}_{4}}{S(X_k)^{4}}
+\end{gather*}
+```
+Donde: \begin{gather*}
+\overline{x_k}_{4}=\frac{1}{n}\sum_{i=1}^{n} (X_i)^{4} 
+\end{gather*}
+
+\
+
+### Propiedades del coeficiente de Courtosis
+
+\
+
+El **coeficiente de curtosis** mide principalemte el **grado de
+apuntamiento** de la distribucion de las observaciones de una variable.
+
+-   Si $Curtosis(X_k) > 3$ \ $\Rightarrow$ \ la distribucion de $X_k$ es
+    **mas apuntada** y con colas mas gruesas **que la distribución
+    normal**.
+
+-   Si $Curtosis(X_k) < 3$ \ $\Rightarrow$ \ la distribucion de $X_k$ es  **menos apuntada** y con colas menos gruesas **que la distribución normal**.
+
+\
+
+### Criterio normalidad
+
+\
+Sea $X_k$ una variable estadistica,
+
+- Si la distribucion de frecuencias de $X_k$ es Normal \ $\Rightarrow$ \ $Curtosis(X_k) = 3$
+
+- Si \ $Curtosis(X_k) \neq 3$ \ $\Rightarrow$ \ la distribucion de frecuencias de $X_k$ **no** es Normal 
+
+\
+
+En base a lo anterior se establece el siguiente criterio de normalidad:
+
+
+
+- Si \ $\mid Curtosis(X_k) \mid \in [2, 4]$   $\Rightarrow$   $X_k$ tiene una distribucion **significativamente**   Normal    $\Rightarrow$ \ Hay evidencia estadistica significativa de que la distribucion de $X_{k,G}$ es una distibución Normal. 
+  
+
+- Si \ $\mid Curtosis(X_k) \mid \notin  [2, 4]$   $\Rightarrow$  $X_k$ **no** tiene una distribucion significativamente  Normal    $\Rightarrow$ \ **No** hay evidencia estadistica significativa de que la distribucion de $X_{k,G}$ sea una distibución Normal.
+    
+
+
+
+\
+
+*Observación:*
+
+Estos criterios pueden modificarse para hacerlos mas o menos conservadores.
+
+
+\
+
+### Curtosis en R
+
+```{r}
+library(moments)
+
+kurtosis(Altura_por_Paises_2022$`Male Height in Cm`)
+```
+Hay evidencia estadistica de que la distribución de frecuencias de la variable de interes es una distribucion Normal con media y varianza igual a la de la variable de interés.
+
+\
+
+Si simulamos una variable normal se obtiene el siguiente resultado:
+
+```{r}
+library(moments)
+
+kurtosis(rnorm(n=15000, mean=mean(Altura_por_Paises_2022$`Male Height in Cm`), sd=sd(Altura_por_Paises_2022$`Male Height in Cm`))) 
+```
+Como era de espera la curtosis de la variable normal simulada es aproximadamente 3.
+
+
+\
+
+\
+
+# Contrastes de hipótesis
+
+\
+
+A continuacion vamos a exponer los contrastes de hipotesis mas empleados
+para analizar la normalidad de una variable cuantitativa.
+
+Un contraste de hipotesis es un procedimiento estadistico para rechazar
+una hipotesis basandose en datos/evidencia.
+
+Los contrastes de hipotesis son una metodologia fundamental en la estadistica moderna, para ampliar informacion sobre ellos recomiendo leer el siguiente articulo https://rpubs.com/FabioScielzoOrtiz/Metodologia_Contrastes_de_Hipotesis
+
+\
+
+Las hipotesis de los contrastes que aqui veremos son de la siguiente forma:
+
+
+\begin{equation*}
+ H_0: X_{k,G} \sim N(\overline{ X_{k,G}} , \sigma( X_{k,G})) \\
+ H_1:  X_{k,G} \nsim N(\overline{ X_{k,G}} , \sigma( X_{k,G}))
+\end{equation*}
+
+Donde:
+
+$ X_{k,G} \sim N(\overline{ X_{k,G}} , \sigma( X_{k,G}))$ \ $\Leftrightarrow$ \  $ X_{k,G}$ tiene una distribucion  Normal con media y desviación típica igual a la de $X_{k,G}$ 
+
+
+\
+
+La regla de decisión que se usará para un nivel de significacion
+$\alpha$ es la basada en el p-valor:
+
+\begin{equation*}
+Rechazamos \ H_0 \ \Leftrightarrow \ pvalor < \alpha \\
+No \ Rechazamos \ H_0 \ \Leftrightarrow \ pvalor \geq \alpha
+\end{equation*}
+
+\
+
+Rechazar $H_0$ significa que hay suficiente evidencia en los datos muestrales como para rechazar $H_0$ en favor de $H_1$
+
+No Rechazar $H_0$ significa que no hay suficiente evidencia en los datos como para aceptar $H_1$
+
+\
+
+El p-valor de estos contrastes indica la probabilidad de obtener una
+distribución frecuecias como la de $X_k$  si
+la distribución de $X_{k,G}$  fuese realmente una
+distribución Normal.
+
+\
+
+## Test de Shapiro-Wilk
+
+\
+
+- Este test se emplea para contrastar normalidad cuando el 
+**tamaño de la muestra es menor de 50** .
+
+  - Adecuado cuando $n<50$
+
+- Para muestras grandes es equivalente al test de Kolmogorov-Smirnov-Lilliefors.
+
+\
+
+### Test de Shapiro-Wilk en R
+
+```{r}
+shapiro.test( x = Altura_por_Paises_2022$`Male Height in Cm` )
+```
+
+Como $pvalor=0.08523 >  \alpha=0.05$ , para un niivel de significacion de 0.05, no hay suficiente evidencia estadistica en los datos como para rechazar la hipotesis de que la variable de interes tenga una distribución de frecuencias Normal con media y desviacion tipica igual a la de la variable de interés.
+
+
+\
+
+## Test de Kolmogorov-Smirnov-Lilliefors
+
+- Es la alternativa al test de Shapiro-Wilk cuando el
+**tamaño de la muestra es mayor de 50**
+
+   - Adecuado cuando $n>50$
+
+\ 
+
+### Hipotesis:
+
+\begin{gather*}
+H_0:  \widehat{F}_{X_{k,G}} (x) = F_{N(\overline{X_{k,G}} , \sigma(X_{k,G}))}(x) \\
+H_1: \widehat{F}_{X_{k,G}} (x) \neq F_{N(\overline{X_{k,G}} , \sigma(X_{k,G}))}(x)
+\end{gather*}
+
+que es equivalente a la formulación clásica:
+
+\begin{equation*}
+ H_0: X_{k,G} \sim N(\overline{X_{k,G}} , \sigma(X_{k,G})) \\
+ H_1: X_{k,G} \nsim N(\overline{X_{k,G}} , \sigma(X_{k,G}))
+\end{equation*}
+
+\
+
+### Estadistico del contraste:
+
+\
+
+\begin{gather*}
+KSL= sup \lbrace \hspace{0.15cm} \mid  \widehat{F}_{X_k} (x) - F_{N(\overline{X_k} , \sigma(X_k))}(x)  \mid / x\in \mathbb{R} \rbrace \sim \bigtriangleup_n
+\end{gather*}
+
+\
+
+Donde:
+
+- $\widehat{F}_{X_k} (x)$ es la funcion de distribucion empirica de la
+variable $X_k$ . \\
+
+- $\widehat{F}_{X_k} (x) = \dfrac{\# \lbrace i=1,...,n / X_{ik} < x \rbrace}{n}$ \ , para $x \in \mathbb{R}$. 
+
+- Por tanto, $\widehat{F}_{X_k}(x)$ no es mas que el cuatil de orden $x$ de $X_k$ , es decir, $\widehat{F}_{X_k} (x) = Q(x, X_k)$
+
+- Sea $A \subset \mathbb{R}$ , se define $sup(A)$ como la menor de las
+cotas superiores de $A$, es decir el menor numero de entre todos los que
+son mayores que los numeros de $A$.
+
+- $KSL$ es la diferencia absoluta "máxima" (suprema) entre los valores de
+$\widehat{F}_{X_k} (x)$ y los de $F_{N(\overline{X_k} , \sigma(X_k))}(x)$
+
+\
+
+### Regla de decisión:
+
+- $Rechazar \ H_0$ \ $\Leftrightarrow$ \ $KSL$ es suficientemente grande \ $\Leftrightarrow$ \ hay suficiente discrepancia entre $\widehat{F}_{X_k}$ y $F_{N(\overline{X_k} , \sigma(X_k))}$ 
+
+
+- $Rechazar \ H_0$ \ $\Leftrightarrow$ \ $KSL  > \bigtriangleup_{n , \alpha }$ \
+
+- El p-valor se calcula como \ $pvalor=P( \bigtriangleup_{n} > KSL)$ 
+
+\
+
+### Test de Kolmogorov-Smirnov-Lilliefors en R
+
+```{r, message=FALSE, warning=FALSE}
+library("nortest")
+
+lillie.test(x = Altura_por_Paises_2022$`Male Height in Cm` )
+```
+
+Como $pvalor=0.08523 >  \alpha=0.05$ , para un niivel de significacion de 0.05, no hay suficiente evidencia estadistica en los datos como para rechazar la hipotesis de que la variable de interes tenga una distribución de frecuencias Normal con media y desviacion tipica igual a la de la variable de interés.
+
+
+
+\
+
+### Comparacion de funciones de distribución en R
+
+Detras del test de Kolmogorov-Smirnov-Lilliefors esta la comparacion entre la funcion de
+distribucion de la variable de interes y la de una v.a. Normal con
+media y desviacion tipica igual a la de la variable de interés.
+
+En el fondo el grafico de comparación de cuantiles expuesto en la seccion de métodos gráficos es la superposicion de los graficos de las funciones de distribucion empiricas de la variable de interes y la v.a. Normal con media y desviacion tipica igual a la de interés.
+
+Podemos obtener con R el grafico de la funcion de distribucion empirica de una variable del siguiente modo:
+
+```{r}
+Altura_Media_Hombres_por_Paises=Altura_por_Paises_2022$`Male Height in Cm`
+
+plot(ecdf(Altura_Media_Hombres_por_Paises))
+```
+
+
+
+Ahora obtenemos el grafico de la funcion de distribucion empirica de una
+variable con distribucion Normal con una media y desviacion tipica igual
+a la de la variable anterior:
+
+```{r}
+Variable_Normal=rnorm(n=dim(Altura_por_Paises_2022)[1], mean=mean(Altura_por_Paises_2022$`Male Height in Cm`), sd=sd(Altura_por_Paises_2022$`Male Height in Cm`))
+
+plot(ecdf(Variable_Normal) )
+```
+
+\ 
+
+La superposicion de estos graficos es justamente nuestro grafico
+de comparacion de cuantiles:
+
+```{r, message=FALSE, warning=FALSE}
+ggplot(data = dff , aes(x = orden_cuantiles, y = cuantiles, color = tipo))+
+  
+  geom_point( ) +
+  
+  scale_y_continuous( n.breaks = 15 , limits = c(160,185))+
+    scale_x_continuous(n.breaks =15)+
+    xlab("Orden del cuantil")+
+    ylab("Cuantiles") +
+  scale_color_manual(breaks = c("Normal", "Variable"),
+                        values=c("red", "black" ))
+```
+
+ 
+\
+
+## Test de Jarque-Bera
+
+\
+
+El estadístico del test de Jarque-Bera se basa en comparar la asimetria y curtosis de  la variable de interes $X_k$ con la asimetria y curtosis de una v.a. Normal con misma media y desviacion típica que la variable de interes.  
+
+\
+ 
+### Estadistico del contraste: 
+
+\
+
+\begin{gather*}
+
+JB= \dfrac{n}{Asimetria(X_k)} \cdot \left( (Asimetria(X_k) - 0)^2 + \dfrac{1}{4} \cdot (Curtosis(X_k)
+ - 3)^2 \right)  \sim \chi^2_2
+ 
+\end{gather*}
+
+
+\
+
+Donde:
+
+
+- $Asimetria(X_k)=0$ es el coeficiente de asimetria de una v.a. con distribucion Normal
+
+- $Curtosis(X_k)=3$ es el coeficiente de curtosis de una v.a. con distribucion Normal
+
+\
+
+### Regla de decision:
+
+\
+
+- $Rechazar \ H_0$ \ $\Leftrightarrow$ \ $JB$ es suficientemente grande, es decir,
+hay suficiente diferencia entre la asimetria o curtosis de $X_k$ conla de una variable con distribución normal.
+
+- $Rechazar \ H_0$ \ $\Leftrightarrow$ \ $JB > \chi^2_{2, \alpha}$
+
+
+- El p-valor se calcula como \ $pvalor=P(\chi^2_{2} > JB)$
+
+
+\
+
+### Test de Jarque-Bera en R
+
+```{r, message=FALSE}
+library("tseries")
+
+jarque.bera.test(x =Altura_por_Paises_2022$`Male Height in Cm`)
+```
+
+Como $pvalor=0.1213 >  \alpha=0.05$ , para un nivel de significación de 0.05, no hay suficiente evidencia estadistica en los datos como para rechazar la hipotesis de que la variable de interes tenga una distribución de frecuencias Normal con media y desviacion tipica igual a la de la variable de interés.
+
+\
+
+\
+
+
+# Bibliografia
+
+Esencialmente el recomendable blog https://www.cienciadedatos.net/ 
+
+
+
+
+
+
+
