@@ -1,0 +1,2553 @@
+---
+title: "Estadistica Descriptiva en R"
+output: 
+ html_document:
+  theme: united
+  number_sections: no
+  toc: yes
+  toc_float: true
+  df_print: kable
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{=html}
+<style type="text/css">
+  body{
+  font-size: 11.5pt;
+}
+</style>
+```
+
+# Datos de trabajo
+
+Cargamos los datos con los que trabajaremos principalmente:
+
+```{r, echo = T,  message=F}
+library(readr)
+library(tidyverse)
+
+Datos <- read_csv("datosECV_Aragon.csv")
+Datos <- Datos %>% select(3:10)
+Datos <- Datos %>% rename("genero"="datosECVmas16.gen",
+         "provincia"="nomprov", "ingresos"="ingnorm")
+```
+
+```{r}
+head(Datos)
+```
+
+
+
+```{r, echo = F, results = 'hide',  message=F}
+library(gridExtra)
+
+Datos_reducidos <- Datos[1:10,]
+
+png("DatosAragon.png", height =30*nrow(Datos_reducidos), 
+    width = 55*ncol(Datos_reducidos))
+grid.table(Datos_reducidos)
+dev.off()
+```
+
+ 
+
+Las definiciones de las variables son las siguientes:
+
+-   **provincia**: indica la provincia de la comunidad de Aragón a la
+    que pertenecen los individuos de la muestra.
+
+-   **genero**: indica el sexo de los individuos de la muestra. Si es
+    masculino toma valor 1, si es femenino toma 2.
+
+-   **edad**: indica el rango de edad de los individuos de la muestra.
+    Toma el valor 1 si la edad esta entre 16 y 24 años, el 2 si la edad
+    esta entre 25 y 49 años, el 3 si la edad esta entre 50 y 64 años, y
+    el 4 si la edad es mayor o igual a 65 años
+
+-   **nacionalidad** (**nac**): indica la nacionalidad de los individuos
+    de la muestar. Si es española toma el valor 1, si es otra
+    nacionalidad toma el 2.
+
+-   **situacion laboral** (**sitlab**): indica la situacion laboral de
+    los individuos de la muestra. Toma el valor 1 si la persona trabaja,
+    el 2 si esta desempleado, y el 3 si esta inactivo.
+
+-   **ingresos** : indica los ingresos de los individuos de la muestra.
+
+-   **horas** : indica el numero de horas que trabajan los individuos de
+    la muestra.
+
+\
+
+# Variables Estadisticas
+
+\
+
+```{=tex}
+\begin{gather*}
+X_k= \begin{pmatrix}
+x_{1k} \\
+x_{2k}\\
+... \\
+x_{nk} 
+\end{pmatrix} 
+\end{gather*}
+```
+es una **variable estadística** porque es un vector con los
+valores/observaciones de la variable $X_k$ para $n$ indiviuos/elementos
+de una muestra.
+
+Donde:  $x_{ik}$ es el valor u observación de la variable $X_k$ para el
+elemento $i$ de la muestra ($i$-esima observación de la variable $X_k$).
+
+\
+
+# Matriz de Datos
+
+\
+
+En general, si hemos observado $p$ variables sobre una muestra
+$\varepsilon$ de $n$ elementos o individuos ,
+
+La matriz de datos $X$ de las variables $X_1,...,X_p$ medidas sobre los
+$n$ individuos o elementos de $\varepsilon$ es: \begin{gather*}
+X= \begin{pmatrix}
+x_{11} & x_{12}&...&x_{1p}\\
+x_{21} & x_{22}&...&x_{2p}\\
+...&...&...&...\\
+x_{n1}& x_{n2}&...&x_{np}
+\end{pmatrix}
+\end{gather*}
+
+Observación: $X$ es una matriz $nxp$
+
+\
+
+## Representacion de la matriz de datos por filas
+
+```{=tex}
+\begin{gather*}
+X= \begin{pmatrix}
+x_{1}^{t} \\
+x_{2} ^t \\
+... \\
+x_{n} ^t 
+\end{pmatrix}
+\end{gather*}
+```
+Donde:
+
+$x_i ^t = (x_{i1}, x_{i2}, ..., x_{ip} )$ es el vector con los valores
+de las $p$ variables $X_1,...,X_p$ para el individuo/elemento $i$ de la
+muestra, con $i=1,...,n$
+
+\
+
+## Representacion de la matriz de datos por columnas
+
+\
+
+Podemos expresar:
+
+```{=tex}
+\begin{gather*}
+X= (X_1 , X_2 ,..., X_p )
+\end{gather*}
+```
+Donde: \begin{gather*}
+X_k= \begin{pmatrix}
+x_{1k} \\
+x_{2k}\\
+... \\
+x_{nk} 
+\end{pmatrix} 
+\end{gather*}
+
+para $k=1,2,...,p$
+
+\
+
+# Recorrido de una variable
+
+\
+
+El **recorrido** de una variable estadistica $X_k$ es el conjunto de
+valores que puede tomar la variable.
+
+En funcion del recorrido de una variable podemos determinar si es
+**cuantitativa** o **categorica**. Clasificación que tiene una
+relevancia central en la estadística.
+
+\
+
+Ejemplos:
+
+\vspace{0.1cm}
+
+$X_k =$ Ingresos de 1000 empleados de Amazon $\Rightarrow$
+$Recorrido(X_k) =[0, \infty )$
+
+\vspace{0.2cm}
+
+$X_k =$ Marca del coche de 50 futbolistas $\Rightarrow$
+$Recorrido(X_k) = \lbrace Mercedes, Audi, ... \rbrace$
+
+\vspace{0.2cm}
+
+$X_k =$ Numero de chalets de 10 urbanizaciones $\Rightarrow$
+$Recorrido(X_k) = \lbrace 0, 1, 2,... \rbrace$
+
+\
+
+# Tipos de variables estadisticas:
+
+\
+
+## Variables Cuantitativas y Categoricas:
+
+\
+
+Tipos de variables estadísticas:
+
+La variable $X_k$ es **cuantitativa** si los elementos de su recorrido
+son conceptualmente numeros
+
+La variable $X_k$ es **categorica** si los elementos de su recorrido son
+etiquetas o categorías (pueden ser numeros a nivel símbolico pero no a
+nivel conceptual)
+
+En este trabajo se asumira que el recorrido de las variables categoricas
+son numeros, puesto que esto permitirá poder aplicarle algunos conceptos
+que no podrian aplicarse si su recorrido no fueran numeros, aunque, como
+se ha comentado, actuarán como etiquetas o categorías.
+
+# Tipos de Variables Cuantitativas
+
+\
+
+## Variables Discretas y Continuas
+
+\
+
+Sea $X_k$ una variable {cuantitativa},
+
+\
+
+La variable $X_k$ es **discreta** si su recorrido es un conjunto
+numerable
+
+La variable $X_k$ es **continua** si su recorrido no es numerable
+
+**Observación:**
+
+En particular, variables cuyo **recorrido** sea un conjunto **finito**
+serán **discretas**.
+
+Variables cuyo **recorrido** sea un conjunto **infinito** serán
+**continuas**.
+
+\
+
+# Tipos de Variables Categoricas
+
+\
+
+Sea $X_k$ una variable **categorica** ,
+
+$X_k$ es **r-aria** si su recorrido tiene **r** elementos que son
+categorias o etiquetas
+
+En estadistica tienen particular importancia las variables categoricas
+**binarias** (2-aria).
+
+\
+
+## Variables Nominales y Ordinales
+
+Sea $X_k$ una variable categorica $r$-aria,
+
+La variable $X_k$ es **nominal** si **no existe una ordenacion** entre
+las $r$ categorias de su recorrido
+
+La variable $X_k$ es **ordinal** si **existe una ordenacion** entre las
+$r$ categorias de su recorrido.
+
+\
+
+**Ejemplos:** \vspace{0.25cm}
+
+$Recorrido(X_k)= \lbrace Apple , Samsung, Oppo \rbrace \Rightarrow X_k$
+es categorica nominal \vspace{0.20cm}
+
+$Recorrido(X_k)= \lbrace mal , regular, bien \rbrace \Rightarrow X_k$ es
+categorica ordinal
+
+\
+
+------------------------------------------------------------------------
+
+\
+
+# Estadisticos descriptivos
+
+Un estadistico descriptivo es una funcion de los elementos de una
+muestra.
+
+\vspace{0.3cm}
+
+En general, toda funcion aplicada sobre una variable estadistica $X_k$
+es un estadistico.
+
+\vspace{0.3cm}
+
+A continuacion veremos algunos de los estadisticos descriptivos mas
+utilizados.
+
+\
+
+## Media Aritmetica
+
+\
+
+La media aritmetica de la variable $X_k$ se define como: \begin{gather*}
+\overline{X_k}=  \frac{1}{n} \cdot \sum_{i=1}^{n} x_{ik} 
+\end{gather*}
+
+\vspace{0.3cm}
+
+Observación: en general a la media aritmetica se le llama simplemente
+media.
+
+\vspace{0.2cm}
+
+**Propiedades:**
+
+```{=tex}
+\begin{gather*}
+\sum_{i=1}^{n} \left( x_{ik} - \overline{X_k} \right) = 0
+\end{gather*}
+```
+\
+
+### Media Aritmetica en R
+
+```{r, echo = T,   message=F}
+mean(Datos$ingresos)
+```
+
+\
+
+### Vector de medias
+
+Dada una matriz de datos $X$ de tamaño $nxp$,
+
+El vector de medias de X es: \begin{gather*}
+\overline{X}=( \overline{X_1} , \overline{X_2} , ... , \overline{X_p} ) ^t
+\end{gather*}
+
+\
+
+### Expresión matricial del vector de medias
+
+La expresión matricial del vector de medias de X es: \begin{gather*}
+\overline{X}= \dfrac{1}{n} \cdot X\hspace{0.05cm}^t \cdot \overrightarrow{1}_{nx1}
+\end{gather*}
+
+\
+
+## Media Ponderada
+
+\
+
+Dada la variable $X_k=(x_{1k}, x_{2k},...,x_{nk})^t$
+
+\vspace{0.25cm}
+
+Dados unos pesos para cada una de las n observaciones de la variable
+$X_k$ : $w=(w_1,w_2,...,w_n)^t$
+
+\vspace{0.25cm}
+
+La **media ponderada** de la variable $X_k$ con el vector de pesos $w$
+es: \begin{gather*}
+\overline{X_k} (w) =   \dfrac{\sum_{i=1}^{n}  x_{ik}\cdot w_i  }{ \sum_{i=1}^{n}  w_{i} }  
+\end{gather*}
+
+\
+
+## Media Geometrica
+
+\
+
+Dada la variable $X_k=(x_{1k}, x_{2k},...,x_{nk})^t$
+
+\vspace{0.25cm}
+
+La **media geometrica** de la variable $X_k$ es: \begin{gather*}
+\overline{X_k}_{geom} =   \sqrt{\Pi_{i=1}^{n}  x_{ik}} = \sqrt{x_{1k}\cdot x_{2k}\cdot...\cdot x_{nk}} 
+\end{gather*}
+
+\
+
+## Mediana
+
+\
+
+La **mediana** de la variable $X_k$ es un valor tal que la {mitad} de
+las observaciones de $X_k$ son **inferiores** a él.
+
+ 
+
+Dada la variable $X_k=(x_{1k}, x_{2k},...,x_{nk})^t$
+
+\vspace{0.2cm}
+
+Ordenamos sus valores de menor a mayor
+$x_{(1)k} < x_{(2)k} < ...< x_{(n)k}$
+
+\vspace{0.2cm}
+
+La mediana de la variable $X_k$ es:
+
+```{=tex}
+\begin{equation*} Mediana(X_k)=  \left\lbrace\begin{array}{l} \dfrac{ x_{(n/2)k} + x_{(n/2 + 1)k} }{2} \hspace{0.3cm},\text{ si n es  {par}} \\ x_{(\lceil n/2 \rceil)k} \hspace{0.3cm},\text{   si n es  {impar}  }  \end{array}\right.
+\end{equation*}
+```
+\
+
+### Mediana en R
+
+Podemos calcular la mediana en R usando la función \textit{median()}
+
+```{r, echo=T}
+median(Datos$ingresos) 
+```
+
+Podemos comprobar que efectivamente la mitad de las observaciones de la
+variable ingresos son menores que la mediana.
+
+```{r, echo=T}
+sum(Datos$ingresos < median(Datos$ingresos) )/length(Datos$ingresos)
+```
+
+\
+
+## Cuantiles
+
+\
+
+El cuantil de orden $p$ de la variable $X_k$ es el valor $Q(p, X_k)$ tal
+que la proporcion de observaciones de $X_k$ que son menores que
+$Q(p, X_k)$ es $p$
+
+\
+
+Más formalmente:
+
+\vspace{0.25cm}
+
+$Q(p, X_k)$ es el cuantil $p$ de $X_k$ \hspace{0.1cm}
+$\Leftrightarrow$\hspace{0.1cm}
+$\dfrac{\# \lbrace i=1,..,n \hspace{0.15cm} / \hspace{0.15cm} x_{ik} < Q(p, X_k) \rbrace}{n} = p$
+
+\
+
+Observación:  la mediana el es cuantil de orden $p=0.5$
+
+\
+
+### Cuantiles en R
+
+```{r, echo=T}
+quantile(Datos$ingresos)
+```
+
+```{r, echo=T}
+quantile(Datos$ingresos, 0.85)
+```
+
+```{r, echo=T}
+quantile(Datos$ingresos, 0.37)
+```
+
+\
+
+## Varianza y Desvación Típica
+
+\
+
+La varianza de la variable $X_k$ es: \begin{equation*}
+\sigma^2(X_k)=  \dfrac{1}{n} \sum_{i=1}^{n} (x_{ik} - \overline{x_k})^2 
+\end{equation*}
+
+\
+
+La desviación típica de la variable $X_k$ es: \begin{equation*}
+\sigma(X_k)= \sqrt{\dfrac{1}{n} \sum_{i=1}^{n} (x_{ik} - \overline{x_k})^2}
+\end{equation*}
+
+\
+
+### Varianza y Desvación Típica en R
+
+```{r, echo=T}
+var(Datos$ingresos)
+```
+
+```{r,  echo=T}
+sd(Datos$ingresos)
+```
+
+\
+
+# Matriz de datos centrada
+
+\
+
+Dada una matriz de datos \$X \$ de tamaño $nxp$
+
+\vspace{0.2cm}
+
+$X$ es **centrada** $\Leftrightarrow$ la **media** de sus variables (
+**columnas**) es **cero**
+
+\
+
+**Operación de centrado:**
+
+La operacion para centrar $X$ es la siguiente: \begin{gather*}
+X  -  \overrightarrow{1}_{nx1}  \cdot \overline{x}\hspace{0.05cm}^t =H_{n}\cdot X_{nxp}
+\end{gather*}
+
+es una **matriz centrada** (la media de sus columnas es cero).
+
+Donde:
+
+```{=tex}
+\begin{gather*}
+H_{n}=I_n - \dfrac{1}{n} \cdot  \overrightarrow{1}_{nx1} \cdot \overrightarrow{1^t}
+\end{gather*}
+```
+es la **matriz de centrado**.
+
+\
+
+# Variables Escaladas
+
+\
+
+Dada la variable cuantitativa $X_k$
+
+\
+
+$X_k^{scale}$ es la variable $X_k$ **escalada**, si se cumple que:
+
+```{=tex}
+\begin{equation*} 
+x_{ik}^{scale}= \dfrac{ x_{ik} - \overline{X_k} }{ \sigma(X_k)}   
+\end{equation*}
+```
+para $i=1,...,n$
+
+\
+
+## Matriz de datos escalada
+
+\
+
+Sea $X=(X_1,...,X_p)$ una matriz de datos de $p$ variables,
+
+\
+
+$X^{scale}=(X_1^{scale},...,X_p^{scale})$ es la matriz de datos $X$
+**escalada**.
+
+\
+
+# Covarianza
+
+\
+Dadas las variables $X_k=(x_{1k}, x_{2k},...,x_{nk})^t$ y
+$X_r=(x_{1r}, x_{2r},...,x_{nr})^t$
+
+\
+
+La covarianza entre las variables $X_j$ y $X_r$ se define como:
+
+```{=tex}
+\begin{gather*}
+S(X_k, X_r) = \frac{1}{n} \cdot \sum_{i=1}^{n} (x_{ik} - \overline{x_k})\cdot (x_{ir} - \overline{x_r})
+\end{gather*}
+```
+\
+
+## Propiedades de la covarianza
+
+\
+
+-   $S(X_k,X_r) \in (-\infty, \infty)$
+
+\vspace{0.2cm}
+
+-   $S(X_k,X_r) \hspace{0.1cm} = \hspace{0.1cm} \dfrac{1}{n} \sum_{i=1}^{n} (x_{ik} \cdot x_{ir}) - \overline{x_k} \cdot \overline{x_r} \hspace{0.2cm} = \hspace{0.2cm} \overline{x_k\cdot x_r} - \overline{x_k} \cdot \overline{x_r}$
+
+-   $S(X_k, a + b\cdot X_r) = b\cdot S(X_k,X_r)$
+
+-   $S(X_k,X_r) = S(X_r,X_k)$
+
+-   $S(X_k,X_r) > 0 \Rightarrow$ **Relación creciente** entre $X_k$ y
+    $X_r$
+
+-   $S(X_k,X_r) < 0 \Rightarrow$ **Relación decreciente** entre $X_k$ y
+    $X_r$
+
+-   $S(X_k,X_r) = 0 \Rightarrow$ **No hay relación** entre $X_k$ y $X_r$
+
+\
+
+### Covarianza en R
+
+```{r}
+cov(Datos$ingresos , Datos$horas)
+```
+
+\
+
+## Matriz de Covarianzas
+
+\
+
+La **matriz de covarianzas** de una matriz de datos $X$ es:
+
+```{=tex}
+\begin{gather*}
+S_X = \left( \hspace{0.2cm} S(X_k , X_r) \hspace{0.2cm} \right)_{k,r=1,...,p}
+\end{gather*}
+```
+\
+
+**Expresión matricial de la matriz de covarianzas:**
+
+```{=tex}
+\begin{gather*}
+S_X=\dfrac{1}{n} \cdot  X\hspace{0.1cm}^t \cdot H \cdot X
+\end{gather*}
+```
+Donde:   $H$ es la matriz de centrado
+
+\
+
+### Matriz de Covarianzas en R
+
+```{r}
+X1<-rnorm(30)
+X2<-rnorm(30)
+X3<-rnorm(30)
+X4<-rnorm(30)
+```
+
+```{r}
+cov(cbind(X1,X2,X3,X4))
+```
+
+\
+
+# Correlacion Lineal de Pearson
+
+\
+
+Dadas las variables $X_k=(x_{1k}, x_{2k},...,x_{nk})^t$ y
+$X_r=(x_{12r}, x_{2r},...,x_{nr})^t$
+
+\
+
+La **correlacion lineal de Pearson** entre las variables $X_k$ y $X_r$
+se define como:
+
+```{=tex}
+\begin{equation*}
+r(X_k,X_r) = \frac{S(X_k,X_r)}{S(X_k) \cdot S(X_r)} 
+\end{equation*}
+```
+\
+
+## Propiedades de la correlación lineal de Pearson
+
+\
+
+-   $r(X_k,X_r) \in [-1,1]$
+
+\vspace{0.2cm}
+
+-   $r_{X_k,a + b\cdot X_r} = r(X_k,X_r)$
+
+\vspace{0.2cm}
+
+-   El signo de $r(X_k,X_r)$ coincide con el de \$S(X_k,X_r) \$
+
+\vspace{0.2cm}
+
+-   $r(X_k,X_r) = \pm 1 \Rightarrow$ Relacion Lineal Perfecta entre
+    $X_k$ e $X_r$
+
+-   $r(X_k,X_r) = 0 \Rightarrow$ No Existe Relacion Lineal entre $X_k$ e
+    $X_r$
+
+\vspace{0.2cm}
+
+-   $r(X_k,X_r) = 0 \Rightarrow$ No Existe Relacion Lineal entre $X_k$ e
+    $X_r$
+
+\vspace{0.2cm}
+
+-   $r(X_k,X_r) \rightarrow \pm 1 \Rightarrow$ Relacion Lineal Fuerte
+    entre $X_k$ e $X_r$
+
+\vspace{0.2cm}
+
+-   $r(X_k,X_r) \rightarrow 0 \Rightarrow$ Relacion Lineal Debil entre
+    $X_k$ e $X_r$
+
+\vspace{0.2cm}
+
+-   $r(X_k,X_r) >0 \Rightarrow$ Relacion Creciente entre $X_k$ e $X_r$
+
+\vspace{0.2cm}
+
+-   $r(X_k,X_r) <0 \Rightarrow$ Relacion Decreciente entre $X_k$ e $X_r$
+
+\
+
+### Correlaciones de Pearson en R
+
+```{r}
+cor(Datos$ingresos, Datos$horas  , method = "pearson")
+```
+
+\
+
+## Matriz de correlaciones
+
+\
+
+La **matriz de correlaciones** de Pearson de la matriz de datos X es:
+
+```{=tex}
+\begin{gather*}
+R_X = \left( \hspace{0.2cm} r(X_k , X_r) \hspace{0.2cm} \right)_{k,r=1,...,p}
+\end{gather*}
+```
+**Expresión matricial de la matriz de correlaciones**
+
+```{=tex}
+\begin{gather*}
+R_X= D_s^{-1} \cdot S_X \cdot D_s^{-1}
+\end{gather*}
+```
+Donde: \vspace{-0.3cm} \begin{gather*}
+D_s = diag \left( \sigma(X_1) ,  \sigma(X_2) ,..., \sigma(X_p) \right)  
+\end{gather*}
+
+\
+
+### Matriz de correlaciones en R
+
+```{r}
+cor(cbind(X1,X2,X3,X4))
+```
+
+\
+
+# Distribución de Frecuencias
+
+## Frecuencia Absoluta de un elemento
+
+\
+
+Dada una variable $X_k=(x_{1k}, x_{2k},...,x_{nk})^t$ \hspace{0.03cm} y
+\hspace{0.03cm} $a \in Recorrido(X_k)$
+
+La **frecuencia absoluta** del **elemento** $a$ en $X_k$ se define como:
+
+```{=tex}
+\begin{gather*}
+Fabs(a ,X_k) \hspace{0.1cm}=\hspace{0.1cm} \# \lbrace i / x_{ik}=a \rbrace \hspace{0.1cm} = \\   \hspace{0.1cm} =\hspace{0.1cm} \text{nº de observaciones de la variable $X_k$ que coinciden con el valor $a$  }
+\end{gather*}
+```
+\
+
+Por ejemplo:  $F(a=1000, X_k)$ podria ser el numero de empleados de
+cierta empresa con un salario de $a=1000$ euros.
+
+**Observación:**
+
+Si $X_k$ es continua lo normal es que $Fabs(a,X_k) = 0$ para muchos
+valores $a$
+
+\
+
+### Frecuencia Absoluta de un elemento en R
+
+Frecuencia absoluta para un elemento $\Rightarrow$ util para variables
+categoricas
+
+```{r}
+frecuencia_absoluta_elemento <- 
+function( variable, elemento){
+  
+frecuencia_absoluta_elemento <-  
+sum(variable == elemento)
+  
+return(frecuencia_absoluta_elemento)  
+} 
+```
+
+```{r}
+frecuencia_absoluta_elemento( round(Datos$ingresos, 3),
+                              8736.2)  
+```
+
+```{r}
+frecuencia_absoluta_elemento( round(Datos$ingresos, 3), 
+                              8736)  
+```
+
+```{r}
+frecuencia_absoluta_elemento(Datos$genero , 1)
+```
+
+```{r}
+frecuencia_absoluta_elemento(Datos$neduc , 3)  
+```
+
+\
+
+## Frecuencia Absoluta de un conjunto
+
+\
+Dada una variable  $X_k=(x_{1k}, x_{2k},...,x_{nk})^t$  y
+ $A \subset Recorrido(X_k)$
+
+\
+
+La **frecuencia absoluta** del **conjunto** $A$ en $X_k$ se define como:
+
+```{=tex}
+\begin{gather*}
+Fabs(A, X_k) = \sum_{a \in A} Fabs(a , X_k ) = \\
+= \text{ nº de observaciones de $X_k$ que pertenecen a $A$}
+\end{gather*}
+```
+\
+
+Por ejemplo:  $Fabs(A=[500,1500] , X_k)$ podria ser el numero de
+empleados con un salario entre 500 y 1500 euros.
+
+\
+
+**Observación:**
+
+$Fabs([b_1,b_2], X_k)$ es un caso particular de $Fabs(A, X_k)$ con
+$A=[b_1,b_2]$
+
+\
+
+### Frecuencia Absoluta de un intervalo en R
+
+Frecuencia absoluta para un intervalo (conjunto continuo) $\Rightarrow$
+util para variables cuantitativas (sobre todo continuas)
+
+```{r}
+frecuencia_absoluta_intervalo <- 
+  
+function( variable, cota_inferior, cota_superior ){
+  
+frecuencia_absoluta_intervalo <-  
+
+sum(variable >= cota_inferior & 
+variable <= cota_superior)
+  
+return(frecuencia_absoluta_intervalo)  
+}
+```
+
+```{r}
+frecuencia_absoluta_intervalo(Datos$ingresos , 8000, 12000)
+```
+
+```{r}
+frecuencia_absoluta_intervalo(Datos$neduc , 3, 4)
+```
+
+\
+
+### Frecuencia Absoluta de un conjunto discreto en R
+
+Frecuencia absoluta para un conjunto discreto $\Rightarrow$ util para
+variables categoricas y cuantitativas discretas
+
+```{r}
+frecuencia_absoluta_conjunto_discreto <- 
+
+function(variable, conjunto){
+cont=0
+for( i in conjunto){
+  
+  if( any(variable == i) ) {
+   
+  cont = cont + sum(variable==i)
+  }
+}
+return(cont)  
+}
+```
+
+```{r}
+A=c(3, 4)
+
+frecuencia_absoluta_conjunto_discreto(Datos$neduc , A)
+```
+
+```{r}
+A=c(1,3,4)
+
+frecuencia_absoluta_conjunto_discreto(Datos$neduc , A)
+```
+
+\
+
+## Frecuencia Relativa de un elemento
+
+\
+
+Dada una variable $X_k=(x_{1k}, x_{2k},...,x_{nk})^t$  y
+ $a \in Recorrido(X_k)$
+
+\
+
+La **frecuencia relativa** del **elemento** $a$ en $X_k$ se define como:
+
+```{=tex}
+\begin{gather*}
+Fre(a,X_k) =  \dfrac{Fabs(a,X_k) }{n} = \\ =\text{ proporcion de observaciones de $X_k$ que coinciden con el valor $a$}
+\end{gather*}
+```
+\
+
+Por ejemplo:  $Fre(a=1000,X_k)$ podria ser la proporcion de empleados de
+cierta empresas con un salario de 1000 euros.
+
+\
+
+## Frecuencia Relativa de un conjunto
+
+\
+
+Dada una variable  $X_k=(x_{1k}, x_{2k},...,x_{nk})^t$  y
+ $A \subset Recorrido(X_k)$
+
+La **frecuencia relativa** del **conjunto** $A$ en $X_k$ se define como:
+\begin{gather*}
+Fre(A,X_k) =  \dfrac{Fabs(A ,X_k) }{n} = \\ = \text{ proporción de observaciones de $X_k$ que pertenecen a $A$}
+\end{gather*}
+
+\
+
+Por ejemplo:  $Fre(A=[500,1500],X_k)$ podria ser la proporcion de
+empleados de cierta empresas con un salario entre 500 y 1500 euros.
+
+\
+
+### Frecuencia Relativa de un elemento en R
+
+```{r}
+frecuencia_relativa_elemento <- 
+
+function( variable , elemento ){
+  
+frecuencia_relativa_elemento <-
+
+frecuencia_absoluta_elemento(variable , elemento)/
+  length(variable)
+  
+  return(frecuencia_relativa_elemento)
+
+}
+```
+
+```{r}
+frecuencia_relativa_elemento(Datos$genero, 1)
+```
+
+\
+
+### Frecuencia Relativa de un intervalo en R
+
+```{r}
+frecuencia_relativa_intervalo <- 
+  
+  function( variable, cota_inferior, cota_superior ){
+  
+  frecuencia_relativa_intervalo <- 
+  frecuencia_absoluta_intervalo(variable , 
+    cota_inferior, cota_superior)/
+    length(variable)
+  
+  return(frecuencia_relativa_intervalo)
+  
+}
+```
+
+```{r}
+frecuencia_relativa_intervalo(Datos$ingresos, 8000, 12000)
+```
+
+\
+
+### Frecuencia Relativa de conjunto discreto en R
+
+```{r}
+frecuencia_relativa_conjunto_discreto <- 
+function( variable, conjunto ){
+  
+frecuencia_relativa_conjunto_discreto <-
+frecuencia_absoluta_conjunto_discreto(variable,conjunto)/
+  length(variable)
+  
+  return(frecuencia_relativa_conjunto_discreto)
+  
+}
+```
+
+```{r}
+A=c(1, 3)
+
+frecuencia_relativa_conjunto_discreto(Datos$neduc, A)
+```
+
+\
+
+## Frecuencias Acumuladas
+
+\
+
+La **frecuencia absoluta acumulada** del elemento $a$ en $X_k$ se define
+como:
+
+```{=tex}
+\begin{gather*}
+Fabscum(a ,X_k)=Fabs \left( \lbrace   i=1,...,n  / x_{ik} \leq a  \rbrace , X_k \right) = \\ = \text{nº de observaciones de $X_k$ que son menores o iguales que $a$}
+\end{gather*}
+```
+\
+
+La **frecuencia relativa acumulada** del elemento $a$ en $X_k$ se define
+como: \begin{gather*}
+Frecum(a,X_k)= \dfrac{Fabscum(a,X_k)}{n} \\ = \text{proporcion de observaciones de $X_k$ que son menores o iguales que $a$}
+\end{gather*}
+
+\
+
+### Frecuencias Absoluta Acumulada en R
+
+```{r}
+frecuencia_absoluta_acumulada <- 
+
+function(variable, elemento){
+  
+frecuencia_absoluta_acumulada <- 
+frecuencia_absoluta_intervalo(variable,-Inf,elemento)
+    
+ return(frecuencia_absoluta_acumulada)
+}
+```
+
+```{r}
+frecuencia_absoluta_acumulada(Datos$ingresos, 8000)
+```
+
+\
+
+### Frecuencia Relativa Acumulada en R
+
+```{r}
+frecuencia_relativa_acumulada <- 
+
+function(variable, elemento){
+  
+frecuencia_relativa_acumulada <-
+
+frecuencia_absoluta_acumulada(variable,elemento)/
+  length(variable)
+    
+  return(frecuencia_relativa_acumulada)
+}
+```
+
+```{r}
+frecuencia_relativa_acumulada(Datos$ingresos, 8000)
+```
+
+\
+
+# Tabla de Frecuencias
+
+\
+
+Vamos a crear una función en R a la que le metemos una variable y nos
+debuelve una tabla con las frecuencias de esa variable.
+
+Las caracteristicas de la función son las siguientes:
+
+-   **Entrada:** matriz de datos $X$
+
+-   **Entrada:** variable $V1$ de $X$
+
+-   $V1$ debe estar cargadas en R como vector
+
+-   $V1$ puede ser una variable categorica o cuantitativa categorizada
+
+-   El recorrido de $V1$ tiene que ser $0:p1$ , con $p1=1,2,3,...$
+
+-   **Entrada:** $p1$
+
+```{r, }
+Tabla_Frecuencias  <- function(X, V1 ,p1 ){
+
+tabla<- matrix(NA, nrow=p1+1, ncol= 4 )
+X<- cbind(X, V1)
+
+for(i in 0:p1){
+
+  tabla[i+1, 1 ] <-  dim( ( X  %>% filter(V1==i ) ) )[1]  
+}
+
+for(i in 0:p1){
+   
+  tabla[i+1, 2 ] <- ( dim( ( X  %>% filter(V1==i ) ) )[1] / dim(X)[1] )
+}
+
+for(i in 0:p1){
+
+  tabla[i+1, 3] <- cumsum(tabla[1:(i+1) ,1])[i+1]
+}
+
+for(i in 0:p1){
+   
+  tabla[i+1, 4] <- cumsum(tabla[1:(i+1) ,2])[i+1]
+}
+
+ rownames(tabla)<-0:p1
+ colnames(tabla)<-c("F.Abs","F.Rel", "F.Abs.Cum","F.Rel.Cum")
+ 
+ tabla <- as.data.frame(tabla)
+ 
+ return(tabla) 
+}
+```
+
+\
+
+## Tabla de Frecuencias para variables categoricas
+
+\
+
+Para usar esta funcion primero debomos redefinir correctamente la
+variable usada:
+
+-   La variable escogida debe estar cargada en R
+
+-   Usando una **variable categorica** $\Rightarrow$ sus categorias
+    deben ser $0,1,...,p1$
+
+```{r}
+# neduc es una variable categorica 3-aria --> debe recodificarse para que sus categorias sean 0,1,2 
+
+Datos$neduc<-recode(Datos$neduc, "1"="0", "2"="1", "3"="2")
+
+neduc<- Datos$neduc
+
+Tabla_Frecuencias(X=Datos, V1=neduc, p1=2)
+```
+
+\
+
+## Tabla de Frecuencias para variables cuantitativas
+
+\
+
+Para usar la función Tabla_Frecuencias() primero debemos redefinir
+correctamente la variable usada:
+
+-   La variable escogida debe estar cargada en R
+
+-   Usando una **variable cuantitativa** $\Rightarrow$ **hay que
+    categorizarla** usando alguna regla de categorización, como la regla
+    de la media, mediana, cuartiles, Scott...
+
+\
+
+### Categorización de Variables Cuantitativas
+
+\
+
+Dada una variable cuantitativa $X_k=(x_{1k},...,x_{nk})^t$ , se trata de obtener su version categorizada $X_k^{cat}=(x_{1k}^{cat},...,x_{nk}^{cat})^t$
+
+La version categorizada de una variable cuantitativa $X_k$ es otra
+variable $X_k^{cat}$ que es categorica, y que toma valores en funcion de
+las observaciones de $X_k$.
+
+\
+
+La idea es la siguiente:
+
+Dada una variable cuantitativa $X_k$ ,
+
+Hay que definir los **intervalos de categorización** de $X_k$, que son una serie de intervalos
+$[L_{1},L_{2}), [L_{2}, L_{3}),..., [L_{\lambda},L_{\lambda+1})$ , tales que:
+
+-   Son disjuntos dos a dos (no comparten elementos).
+
+-   Toda observación/valor de $X_k$ pertenece a algún intervalo.
+
+-   Tienen la misma amplitud (mismo tamaño).
+
+\
+
+Una vez definidos los intervalos de categorizacion de $X_k$ se aplica la siguiente regla para
+definir $X_k^{cat}$
+
+```{=tex}
+\begin{equation*} x^{cat}_{ik} = \left\lbrace\begin{array}{l} 0, \text{ si $x_{ik} \in [L_{1},L_{2})$}  \\ 1, \text{ si $x_{ik} \in [L_{2},L_{3}) $}   
+\\ ...  
+\\ \lambda, \text{ si $x_{ik} \in [L_{\lambda},L_{\lambda+1}) $} \end{array}\right.
+\end{equation*}
+```
+
+\
+
+En definitiva:
+
+\begin{equation*}
+x_{ik} \in [L_{r}, L_{r+1}] \ \Leftrightarrow \ x_{ik}^{cat} = r-1  
+\end{equation*}
+
+para \ $r=1,...,\lambda > 0$
+
+\
+
+Donde:
+
+$[L_{r}, L_{r+1}]$ es el intervalo $r$-esimo de los intervalos de categorizacion de $X_k$
+
+\
+
+
+Exiten diferentes reglas para definir los intervalos de categorizacion
+de una variable cuantitativa. En este trabajo veremos las reglas de la
+mediana, media, cuartiles y Scott.
+
+\
+
+### Regla de la Mediana
+
+Según la regla de la mediana los intervalos de categorización de $X_k$
+son:
+
+```{=tex}
+\begin{gather*}
+[Min(X_k), Mediana(X_k)], (Mediana(X_k), Max(X_k)]
+\end{gather*}
+```
+Por tanto, a partir de $X_k$ se obtiene la variable $X_k^{cat}$ definida
+como:
+
+```{=tex}
+\begin{equation*} x^{cat}_{ik} = \left\lbrace\begin{array}{l} 0, \text{ si $x_{ik} \in [Min(X_k), Mediana(X_k)]$} \\ 1, \text{ si $x_{ik} \in (Mediana(X_k), Max(X_k)]$}    \end{array}\right.
+\end{equation*}
+```
+\
+
+### Regla de la Media
+
+Según la regla de la media los intervalos de categorización de $X_k$
+son:
+
+```{=tex}
+\begin{gather*}
+\left[ Min(X_k) \hspace{0.02cm} ,\hspace{0.02cm} \overline{x_k} \right], \left(\overline{x_k} \hspace{0.02cm},\hspace{0.02cm} Max(X_k)\right]
+\end{gather*}
+```
+Por tanto, a partir de $X_k$ se obtiene la variable $X_k^{cat}$ definida
+como:
+
+```{=tex}
+\begin{equation*}
+x^{cat}_{ik} = \left\lbrace\begin{array}{l} 0, \text{ si $x_{ik} \in [Min(X_k)\hspace{0.02cm},\hspace{0.02cm} \overline{x_k} ]$} \\ 1, \text{ si $x_{ik} \in  (\overline{x_k} \hspace{0.02cm},\hspace{0.02cm} Max(X_k)] $}    \end{array}\right.
+\end{equation*}
+```
+\
+
+### Regla de los Cuartiles
+
+Según la regla de la cuartiles los intervalos de categorización de $X_k$
+son:
+
+```{=tex}
+\begin{gather*}
+\left[ Min(X_k) \hspace{0.03cm} ,\hspace{0.03cm} Q(0.25,X_k) \right], \left(Q(0.25,X_k) \hspace{0.02cm},\hspace{0.02cm} Q(0.50,X_k)\right] , \\ \left(Q(0.50,X_k) \hspace{0.02cm},\hspace{0.02cm} Q(0.75,X_k)\right], \left(Q(0.75,X_k) \hspace{0.02cm},\hspace{0.02cm} Max(X_k)\right]
+\end{gather*}
+```
+Por tanto, a partir de $X_k$ se obtiene la variable $X_k^{cat}$ definida
+como:
+
+```{=tex}
+\begin{equation*} x^{cat}_{ik} = \left\lbrace\begin{array}{l} 0, \text{ si $x_{ik} \in \left[ Min(X_k) \hspace{0.03cm} ,\hspace{0.03cm} Q(0.25,X_k) \right] $} \\ 1, \text{ si $x_{ik} \in \left[ Q(0.25 , X_k) , Q(0.50 , X_k)\right] $}   
+\\ 2, \text{ si $x_{ik} \in (Q(0.50 , X_k) , Q(0.75 , X_k)] $}    \\ 3, \text{ si $x_{ik} \in \left(Q(0.75,X_k) \hspace{0.02cm},\hspace{0.02cm} Max(X_k)\right] $} \end{array}\right.
+\end{equation*}
+```
+\
+
+### Regla de Scott
+
+Según la regla de la Scott los intervalos de categorización de $X_k$
+son: $[L_{1},L_{2}), [L_{2}, L_{3}),...,[L_{ \lambda},L_{ \lambda+1})$
+
+Por tanto, a partir de $X_k$ se obtiene la variable $X_k^{cat}$ definida
+como:
+
+```{=tex}
+\begin{equation*} x^{cat}_{ik} = \left\lbrace\begin{array}{l} 0, \text{ si $x_{ik} \in [L_{1},L_{2})$}  \\ 1, \text{ si $x_{ik} \in [L_{2},L_{3}) $}   
+\\ ...  
+\\ \lambda, \text{ si $x_{ik} \in [L_{\lambda},L_{\lambda+1}) $} \end{array}\right.
+\end{equation*}
+```
+
+\
+
+El procedimiento para calcular los intervalos de Scott es el siguiente:
+
+\
+
+1.  Determinar el número de clases intervalos:
+
+\vspace{0.2cm}
+
+Primero hay que determinar la \textbf{amplitud teorica} $A_t$ de las
+clases, que se calcula como:
+
+```{=tex}
+\begin{equation*}
+A_{t} = 3.5 \cdot S (X_k) \cdot n^{-1/3}
+\end{equation*}
+```
+El \textbf{número de intervalos} será: \begin{equation*}
+\lambda=\left\lceil \frac{Max(X_k)-Min(X_k)}{A_{t}} \right\rceil
+\end{equation*}
+
+\
+
+2.   Determinar el ancho de los intervalos:
+
+La \textbf{amplitud} de los intervalos $A$ será la misma para todos
+ellos y viene definida por:
+
+```{=tex}
+\begin{equation*}
+A=\left\lceil \frac{Max(X_k)-Min(X_k)}{\lambda} \right\rceil
+\end{equation*}
+```
+\
+
+3.  Determinar los extremos de los intervalos:
+
+\vspace{0.2cm}
+
+Los intervalos serán:
+$[L_{1},L_{2}), [L_{2}, L_{3}),...,[L_{ \lambda},L_{ \lambda+1})$
+
+\vspace{0.2cm}
+
+Donde $L_{i}, L_{i+1}$ son los intervalos inferior y superior,
+respectivamente, del intevalo $i$-esimo.
+
+\vspace{0.2cm}
+
+La regla de Scott para determinar los **extremos de los intervalos** es
+la siguiente:
+
+```{=tex}
+\begin{gather*}
+   L_{1}= Min(X_k) - c  \\
+  L_{2}=L_{1} + A \\   
+  L_{3}=L_{2} + A\\
+   ... \\
+   L_{\lambda+1}=L_{\lambda} + A 
+   \end{gather*}
+```
+
+Donde: \ $c \geq 0$ debe ser elegido a conveniencia del analista.
+
+En general:
+
+```{=tex}
+\begin{gather*}
+   L_{i}=L_{1} + (i-1)\cdot A   \hspace{0.5cm} i=1,...,\lambda+1 
+      \end{gather*}
+```
+
+\
+
+### Regla de Scott Modificada
+
+La regla de Scott Modificada es una variacion de la regla de Scott que permite escoger el número de intervalos de categorizacion.
+
+
+Según la regla de la Scott Modificada los intervalos de categorización de $X_k$
+son: $[L_{1},L_{2}), [L_{2}, L_{3}),...,[L_{ \lambda},L_{ \lambda+1})$
+
+Por tanto, a partir de $X_k$ se obtiene la variable $X_k^{cat}$ definida
+como:
+
+```{=tex}
+\begin{equation*} x^{cat}_{ik} = \left\lbrace\begin{array}{l} 0, \text{ si $x_{ik} \in [L_{1},L_{2})$}  \\ 1, \text{ si $x_{ik} \in [L_{2},L_{3}) $}   
+\\ ...  
+\\ \lambda, \text{ si $x_{ik} \in [L_{\lambda},L_{\lambda+1}) $} \end{array}\right.
+\end{equation*}
+```
+
+\
+
+El procedimiento para calcular los intervalos de Scott Modificados es el siguiente:
+
+\
+
+1.  Determinar el número de clases intervalos:
+
+Esta es la gran diferencia entre la regla de Scott simple y la modificada.
+
+El número de intervalos $\lambda$ se escoge segun el criterio del analista.
+
+\
+
+2.   Determinar el ancho de los intervalos:
+
+La \textbf{amplitud} de los intervalos $A$ será la misma para todos
+ellos y viene definida por:
+
+```{=tex}
+\begin{equation*}
+A=\left\lceil \frac{Max(X_k)-Min(X_k)}{\lambda} \right\rceil
+\end{equation*}
+```
+\
+
+3.  Determinar los extremos de los intervalos:
+
+ 
+Los intervalos serán:
+$[L_{1},L_{2}), [L_{2}, L_{3}),...,[L_{ \lambda},L_{ \lambda+1})$
+
+ 
+Donde $L_{i}, L_{i+1}$ son los intervalos inferior y superior,
+respectivamente, del intevalo $i$-esimo.
+
+ 
+ 
+
+La regla de Scott para determinar los **extremos de los intervalos** es
+la siguiente:
+
+```{=tex}
+\begin{gather*}
+   L_{1}= Min(X_k) - c  \\
+  L_{2}=L_{1} + A \\   
+  L_{3}=L_{2} + A\\
+   ... \\
+   L_{\lambda+1}=L_{\lambda} + A 
+   \end{gather*}
+```
+
+Donde: \ $c \geq 0$ debe ser elegido a conveniencia del analista.
+
+En general:
+
+```{=tex}
+\begin{gather*}
+   L_{i}=L_{1} + (i-1)\cdot A   \hspace{0.5cm} i=1,...,\lambda+1 
+      \end{gather*}
+```
+\
+
+Para categorizar variables cuantitativas vamos a servirnos de la función
+*cut()* de R. Se recomienda leer la ayuda de esta función.
+
+*cut(variable*, *breaks)*
+
+*breaks* puede ser un número, por ejemplo 3 $\Rightarrow$ cut() genera 3
+intervalos que cubren las observaciones de la variable y son disjuntos,
+y con la misma amplitud, y devuelve a que intervalo pertenece cada
+observación de la variable.
+
+*breaks* también puede ser un vector, por ejemplo c(1, 3, 8, 9, 12)
+$\Rightarrow$ cut() genera los intervalos (1,3] (3,8], (8,9] (9,12], y
+devuelve a qué intervalo pertenece cada observación de la variable.
+
+La funcion *cut()* es muy util para calcular frecuencias absolutas y relativas en variables cuantitativas.
+
+Para calcular las frecuencias absolutas de una variable cuantitativa en
+3 intervalos:
+
+```{r}
+table(cut(Datos$ingresos, breaks = 3))
+```
+
+Para calcular las frecuencias relativas de una variable cuantitativa en
+3 intervalos:
+
+```{r}
+table(cut(Datos$ingresos, breaks = 3))/length(Datos$ingresos)
+```
+
+\
+
+## Ejemplos de cálculo de Tablas de Frecuecias para variables cuantitativas
+
+\
+
+### Ejemplo 1: Tabla Frecuencias para Variable Cuantitativa usando la Regla de la Mediana
+
+\
+
+Categorizamos la variable *ingresos* usando la **regla de la mediana**:
+
+Recordemos que segun la regla de la mediana los intervalos de
+categorización son: $[Min(X_k), Mediana(X_k)], (Mediana(X_k), Max(X_k)]$
+
+```{r}
+median(Datos$ingresos)
+```
+
+Vector con los extremos de los intervalos:
+
+```{r}
+L <- c(min(Datos$ingresos), median(Datos$ingresos), max(Datos$ingresos)) 
+```
+
+```{r}
+levels( cut(Datos$ingresos, breaks = L , include.lowest = T) )
+```
+
+Categorizamos la variable *ingresos*, generando una nueva variable que indica el intervalo al que pertenece cada observación. Si la
+observacion $j$-esima de la variable *ingresos* pertenece al intervalo $i$-esimo, el valor $j$-esimo de la nueva variable será $i-1$ , en este caso para $i=1,2$ puesto que solo hay 2 intervalos de categorización.
+
+```{r}
+a<-cut(Datos$ingresos, breaks = L , include.lowest = T)
+  
+ingresos_categorizados_regla_mediana <- ifelse( a == "[-1e+03,1.23e+04]"  , 0 , 1 )
+
+ingresos_categorizados_regla_mediana[1:20]
+```
+
+Ahora tenemos una nueva variable, la variable cuantitativa ingresos
+categorizada, la cual es binaria (toma valores 0,1). Por lo que podemos
+aplicar nuestra función Tabla_Frecuencias() a esta nueva variable:
+
+```{r}
+Tabla_Frecuecias_Ingresos_Regla_Mediana <- Tabla_Frecuencias(Datos,ingresos_categorizados_regla_mediana, p1=1)
+
+rownames(Tabla_Frecuecias_Ingresos_Regla_Mediana) <- levels(cut(Datos$ingresos, breaks = L, include.lowest = T, dig.lab=10))
+
+Tabla_Frecuecias_Ingresos_Regla_Mediana
+```
+
+\
+
+### Ejemplo 2: Tabla Frecuencias para Variable Cuantitativa usando la Regla de Scott
+
+\
+
+Calculamos los intervalos de Scott para la variable cuantitativa
+*ingresos* :
+
+```{r}
+s=sd(Datos$ingresos)
+n=length(Datos$ingresos)
+max=max(Datos$ingresos)
+min=min(Datos$ingresos)
+
+#Amplitud teorica
+At = 3.5*s*n^-(1/3) 
+
+#Numero de intervalos
+lambda = ceiling((max-min)/At) 
+
+#Amplitud de los intervalos
+A = ceiling((max-min)/lambda) 
+
+#Primer extremo
+L1 = min
+
+#Vector con los extremos de los intervalos
+L = L1 + 0:lambda * A  
+```
+
+El número de intervalos obtenidos con la regla de Scott es:
+
+```{r}
+lambda
+```
+
+El vector L con los extremos de los intervalos es:
+
+```{r}
+L
+```
+
+Los intervalos obtenidos con la funcion cut aplicada sobre el vector L
+son:
+
+```{r}
+levels(cut(Datos$ingresos, breaks = L , include.lowest = T))
+```
+
+La notación científica distorsiona los extremos de los intervalos.
+Usando el argumento *dig.lab* podemos desactivar la notacion cientifica,
+y asi obtener los intervalos con los extremos exactos:
+
+```{r}
+levels(cut(Datos$ingresos, breaks = L , include.lowest = T, dig.lab=10)) 
+```
+
+*dig.lab=10* $\Rightarrow$ se muestran los 10 primeros digitos de los intervalos sin recurrir a notacion cientifica, en este caso tienen menos digitos que 10, por lo que no se recurre a la notacion cientifica.
+
+Como hay muchos intervalos, usar *ifelse()* para obtener la variable cuantitativa categorizada no es eficiente.
+
+Pero existe una opción mucho más eficiente para tal proposito en estos casos.
+
+El siguiente código asigna a cada intervalo un número (al $i$-esimo intervalo el número $i$), y muestra a que intervalo pertenece cada observación de la variable cuantitativa *ingresos*, usando para ello el argumento *labels*
+
+```{r}
+cut(Datos$ingresos, breaks = L, include.lowest = T, labels=F)[1:20]
+```
+
+Categorizamos la variable *ingresos*, generando una nueva variable que que indica el intervalo al que pertenece cada observación. Si la observacion $j$-esima de la variable *ingresos* pertenece al intervalo $i$-esimo, el valor $j$-esimo de la nueva variable será $i-1$ , en este caso para $i=1,2,...,23$, puesto que hay 23 intervalos de categorización.
+
+```{r}
+a<-(cut(Datos$ingresos, breaks = L, include.lowest = T,  labels=F))
+
+ingresos_categorizados_regla_Scott <- a-1
+
+ingresos_categorizados_regla_Scott[1:20]
+```
+
+Calculamos la tabla de frecuencias de la variable *ingresos* usando la función Tabla_Frecuencias() , aplicada sobre la variable ingresos categorizada con la regla de Scott:
+
+```{r}
+Tabla_Frecuencias_Ingresos_Regla_Scott <- Tabla_Frecuencias(Datos, ingresos_categorizados_regla_Scott, p1=22)
+
+rownames(Tabla_Frecuencias_Ingresos_Regla_Scott) <- paste(levels(cut(Datos$ingresos, breaks = L,
+include.lowest = T,  dig.lab=10 )) , 0:22 , sep = "  -  ") 
+
+Tabla_Frecuencias_Ingresos_Regla_Scott <- round(Tabla_Frecuencias_Ingresos_Regla_Scott , 3)
+
+Tabla_Frecuencias_Ingresos_Regla_Scott
+```
+
+
+Esta tabla nos revela informacion muy util, como por ejemplo que hay 14 observaciones de la variable ingresos que caen en el intervalo, o equivalentemente, hay 14 ceros (0) entre los valores de la variable ingresoso categorizada con la regla de Scott.
+
+\
+
+\
+
+# Histograma
+
+\
+
+Un *histograma* es un gráfico de barras apiladas empleado para
+representar las frecuencias absolutas o relativas de una variable
+cuantitativa.
+
+Para representar el histograma de una variable cuantitativa, se
+necesitan las frecuencias absolutas o relativas de dicha variable, por
+lo que se necesitan obtener los intervalos de categorizacion de la
+variable cuantitativa. Para ello se pueden seguir las reglas de
+categorización antes vistas.
+
+Una vez que tenemos los intervalos de categorizacion de la variable
+cuantitativa, el histograma se construye de la siguiente manera:
+
+En el *eje x* contiene el recorrido de la variable cuantitativa. En el
+*eje y* las frecuencias absolutas o relativas de los intervalos de
+categorización en la variable cuantitativa.
+
+En el *interior* del gráfico hay barras apiladas, tantas como
+intervalos, y la $i$-esima barra está asignada al intervalo $i$-esimo,
+con una altura igual a la frecuencia absoluta o relativa del intervalo
+i-esimo en la variable cuantitativa.
+
+Generamos un histograma de la variable cuantitativa *ingresos* usando
+los intervalos de categorización que se obtienen con la regla de Scott.
+
+```{r, echo=TRUE, message=FALSE}
+ggplot(data = Datos, aes(x=ingresos ))+
+geom_histogram(aes(y = after_stat(count / sum(count))) , breaks=L , fill="bisque3", color="black")+
+ scale_y_continuous( n.breaks = 15 )+
+  scale_x_continuous(n.breaks = 12)+
+  labs(x = "Ingresos",y = "Frecuencia Relativa")
+```
+
+Añadimos al histograma anterior lineas discontinuas verticales asociadas
+a los valores de algunos estadisticos descriptivos:
+
+```{r, echo=FALSE, message=FALSE}
+ggplot(data = Datos, aes(x=ingresos ))+
+geom_histogram(aes(y = after_stat(count / sum(count))) , breaks=L , fill="bisque3", color="black")+
+ scale_y_continuous( n.breaks = 15 )+
+  scale_x_continuous(n.breaks = 12)+
+  labs(x = "Ingresos", y = "Frecuencia Relativa")+
+  
+  geom_vline(aes(xintercept = median(ingresos),
+                  color = "mediana"),
+              linetype = "dashed",
+              size = 1) +
+   geom_vline(aes(xintercept = mean(ingresos),
+                  color = "media"),
+              linetype = "dashed",
+              size = 1) +
+   geom_vline(
+     aes(xintercept = quantile(ingresos, 0.25),
+         color = "cuantil_25"),
+     linetype = "dashed",
+     size = 1
+   ) +
+   geom_vline(
+     aes(xintercept = quantile(ingresos, 0.75),
+         color = "cuantil_75"),
+     linetype = "dashed",
+     size = 1
+   ) +
+ geom_vline(
+     aes(xintercept = quantile(ingresos, 0.60),
+         color = "cuantil_60"),
+     linetype = "dashed",
+     size = 1
+   )+ 
+  geom_vline(
+     aes(xintercept = quantile(ingresos, 0.40),
+         color = "cuantil_40"),
+     linetype = "dashed",
+     size = 1
+   )+
+   scale_color_manual(
+     name = "statistics",
+     values = c(
+       mediana = "black",
+       media = "green",
+       cuantil_25 = "purple",
+       cuantil_75 = "blue",
+       cuantil_60="orange", cuantil_40="white"
+     )
+   ) 
+```
+
+\
+
+# Gráfico de Barras
+
+Un *gráfico de barras* es un gráfico de barras no apliladas empleado
+para representar las frecuencias absolutas o relativas de una variable
+categorica.
+
+El gráfico de barras se construye de la siguiente manera:
+
+En el *eje x* contiene el recorrido de la variable categorica. En el
+*eje y* las frecuencias absolutas o relativas de los intervalos de
+categorización en la variable cuantitativa.
+
+En el *interior* del gráfico hay barras no apiladas, tantas como
+categorias tiene la variable categorica, cada barra está asignada a una
+categoria de la variable, y tiene una altura igual a la frecuencia
+absoluta o relativa de la categoria en la variable categorica.
+
+Generamos un gráfico de barras de la variable categórica *neduc* (nivel
+de educación):
+
+```{r, echo=TRUE, message=FALSE}
+ggplot(data = Datos, aes(x=neduc ))+
+geom_bar(aes(y = after_stat(count / sum(count))) ,
+ fill="bisque3", color="black")+
+ scale_y_continuous( n.breaks = 15 )+
+  labs(x = "Nivel de Educacion",
+  y = "Frecuencia Relativa")
+```
+
+\
+
+# Box-Plot
+
+Generamos un box-plot de la variable cuantitativa *ingresos*
+
+```{r, echo=TRUE, message=FALSE}
+ggplot(Datos) + 
+  geom_boxplot( aes(x = ingresos), fill="bisque3", 
+  color = 'black') + 
+  xlab("Ingresos") + 
+  ggtitle("Box-plot de la variable Ingresos ")+
+  scale_x_continuous(n.breaks = 12)
+```
+
+El **box-plot** o gráfico de caja es un gráfico para variables
+cuantitativas que contiene los siguientes elementos:
+
+-   El **extremos izquierdo de la caja** (box) representa el valor
+     $Q(0.25, X_k)$
+
+-   El **extremo derecho de la caja** representa el valor
+     $Q(0.75, X_k)$
+
+-   La **linea del interior de la caja** representa el valor
+     $Mediana(X_k)$
+
+-   El **extremo izquierdo de la linea horizontal** es:
+
+```{=tex}
+\begin{equation*}
+Max \left( Min(X_k) \hspace{0.1cm},\hspace{0.1cm} Q(0.25,X_k) - 1.5\cdot RIC \right)
+\end{equation*}
+```
+-   El **extremo derecho de la linea horizontal** es:
+
+```{=tex}
+\begin{equation*}
+Min \left( Max(X_k) \hspace{0.1cm},\hspace{0.1cm} Q(0.75,X_k) + 1.5\cdot RIC  \right)
+\end{equation*}
+```
+-   Los puntos que estan mas alla del extremos izquierdo o derecho de la
+    linea horizontal son consideradas **observaciones atípicas**.
+
+
+Donde:  $RIC= Q(0.75,X_k) - Q(0.25,X_k)$ es el **rango intercuartilico**
+de $X_k$.
+
+\
+
+Añadimos lineas verticales discontinuas con valores relevantes sobre el
+gráfico anterior:
+
+```{r echo=FALSE, message=FALSE}
+rango_intercuartilico_ingresos<-quantile(Datos$ingresos, 0.75) - quantile(Datos$ingresos, 0.25)
+
+extremo_izquierdo<- max( min(Datos$ingresos) ,  quantile(Datos$ingresos, 0.25) - 1.5*rango_intercuartilico_ingresos)  
+extremo_derecho<- min( max(Datos$ingresos) ,  quantile(Datos$ingresos, 0.75) + 1.5*rango_intercuartilico_ingresos)  
+```
+
+```{r, echo=FALSE, message=FALSE}
+ggplot(Datos) + 
+  geom_boxplot( aes(x = ingresos), fill="bisque3", color = 'black') + 
+  xlab("Ingresos") + 
+  ggtitle("Box-plot de la variable Ingresos ")+
+  scale_x_continuous(n.breaks = 12)+
+  
+ geom_vline(aes(xintercept = median(ingresos),
+                  color = "mediana"),
+              linetype = "dashed",
+              size = 1) +
+   geom_vline(aes(xintercept = mean(ingresos),
+                  color = "media"),
+              linetype = "dashed",
+              size = 1) +
+   geom_vline(
+     aes(xintercept = quantile(ingresos, 0.25),
+         color = "cuantil_25"),
+     linetype = "dashed",
+     size = 1
+   ) +
+   geom_vline(
+     aes(xintercept = quantile(ingresos, 0.75),
+         color = "cuantil_75"),
+     linetype = "dashed",
+     size = 1
+   )   + 
+   geom_vline(
+     aes(xintercept = extremo_izquierdo,
+         color = "extremo_izquierdo"),
+     linetype = "dashed",
+     size = 1
+   )   +
+  geom_vline(
+     aes(xintercept = extremo_derecho,
+         color = "extremo_derecho"),
+     linetype = "dashed",
+     size = 1
+   )  +
+   scale_color_manual(
+     name = "statistics",
+     values = c(
+       mediana = "red",
+       media = "green",
+       cuantil_25 = "purple",
+       cuantil_75 = "blue",
+       extremo_derecho="orange",
+       extremo_izquierdo="cyan4"
+     )
+   )
+```
+
+\
+
+# Asimetria y Curtosis
+
+## Coeficiente de Asimetria
+
+El coeficiente de asimetria de Fisher de la variable cuantitativa $X_k$
+es:
+
+```{=tex}
+\begin{gather*}
+Asimetria(X_k) = \dfrac{\overline{x_{k}}_{3}}{S(X_k)^{3}}
+\end{gather*}
+```
+donde: \begin{gather*}
+\overline{x_{k}}_{3}=\dfrac{1}{n}\sum_{i=1}^{n} (x_{ik})^{3} 
+\end{gather*}
+
+\
+
+### Propiedades del coeficiente de asimetria
+
+El **coeficiente de asimetria de Fisher** mide el **grado de simetria**
+de la distribucion de las observaciones de una variable respecto de su
+media aritmética.
+
+-   Si $Asimetria(X_k) > 0$ $\Rightarrow$ la distribución de $X_k$ es
+    **asimétrica a la derecha**.
+
+-   Si $Asimetria(X_k) <0$ $\Rightarrow$ la distribución de $X_k$ es
+    **asimétrica a la izquierda**.
+
+-   Si la distribución es **simétrica** respecto de la media
+    $\Rightarrow$ $Asimetria(X_k)=0$ . Pero el recíproco no es cierto.
+
+\
+
+### Asimetria en R
+
+```{r}
+library(moments)
+
+skewness(Datos$ingresos)
+```
+
+\
+
+#### Comparación Asimetia
+
+\
+
+```{r, include=F}
+X1 <- rchisq(5000, 2)
+```
+
+```{r, include=F}
+library(moments)
+
+skewness(X1)
+```
+
+```{r, include=F}
+p1<- ggplot(data = as.data.frame(X1), aes(x=X1 ))+
+geom_histogram(aes(y = after_stat(count / sum(count)))   , fill="bisque3", color="black")+
+ scale_y_continuous( n.breaks = 15 )+
+  scale_x_continuous(n.breaks = 12)+
+  xlab("X1") +
+  ylab("Frecuencias Relativas") +
+  ggtitle("Districución Asimétrica a la derecha : Asimetria = 2.03")+
+  
+ geom_vline(aes(xintercept = median(X1),
+                  color = "mediana"),
+              linetype = "dashed",
+              size = 1) +
+   geom_vline(aes(xintercept = mean(X1),
+                  color = "media"),
+              linetype = "dashed",
+              size = 1)+
+  
+   scale_color_manual(
+     name = "statistics",
+     values = c(
+       mediana = "red",
+       media = "green"
+     )
+   )
+
+p1
+```
+
+```{r, include=F}
+X2 <- rnorm(5000, 2)
+```
+
+```{r, include=F}
+library(moments)
+
+skewness(X2)
+```
+
+```{r, include=F}
+p2<- ggplot(data = as.data.frame(X2), aes(x=X2))+
+geom_histogram(aes(y = after_stat(count / sum(count)))   , fill="bisque3", color="black")+
+ scale_y_continuous( n.breaks = 15 )+
+  scale_x_continuous(n.breaks = 12)+
+  xlab("X2") +
+  ylab("Frecuencias Relativas") +
+  ggtitle("Distribución Simétrica : Asimetria = 0.022")+
+  
+  geom_vline(aes(xintercept = median(X2),
+                  color = "mediana"),
+              linetype = "dashed",
+              size = 1) +
+   geom_vline(aes(xintercept = mean(X2),
+                  color = "media"),
+              linetype = "dashed",
+              size = 1)+
+  
+   scale_color_manual(
+     name = "statistics",
+     values = c(
+       mediana = "red",
+       media = "green"
+     )
+   )
+
+p2
+```
+
+```{r, include=F}
+X3 <- rbeta(5000, 9, 2)
+```
+
+```{r, include=F}
+skewness(X3)
+```
+
+```{r, include=F}
+p3<- ggplot(data = as.data.frame(X3), aes(x=X3))+
+geom_histogram(aes(y = after_stat(count / sum(count)))   , fill="bisque3", color="black")+
+ scale_y_continuous( n.breaks = 15 )+
+  scale_x_continuous(n.breaks = 12)+
+  xlab("X3") +
+  ylab("Frecuencias Relativas") +
+  ggtitle("Distribución Asimétrica a la izquierda : Asimetria = -0.84")+
+  
+  geom_vline(aes(xintercept = median(X3),
+                  color = "mediana"),
+              linetype = "dashed",
+              size = 1) +
+   geom_vline(aes(xintercept = mean(X3),
+                  color = "media"),
+              linetype = "dashed",
+              size = 1)+
+  
+   scale_color_manual(
+     name = "statistics",
+     values = c(
+       mediana = "red",
+       media = "green"
+     )
+   )
+
+p3
+```
+
+```{r, include=F}
+df<-as.data.frame(cbind(c(X1,X2,X3), grupo=c(rep(1,5000), rep(2,5000),rep(3,5000))))
+```
+
+```{r, echo=F, message=FALSE}
+ggplot(data = df , aes(x=V1, fill=factor(grupo)))+
+geom_histogram(aes(y = after_stat(count/sum(count))) , color="black")+
+  facet_wrap(grupo~., scales="free", ncol = 3)+
+ scale_y_continuous( n.breaks = 15 )+
+  scale_x_continuous(n.breaks = 12)+
+  ggtitle("Comparación asimetria de distribuciones")+
+  ylab("Frecuencias Relativas")+ xlab("")+
+  scale_fill_discrete(labels = c("Asimetrica derecha", "Simetrica", "Asimetrica izquierda"))+
+  guides(fill = guide_legend(title = " "),
+         colour = guide_legend(title = " "))
+
+```
+
+\
+
+## Coeficiente de Curtosis
+
+\
+
+El **coeficiente de curtosis** de la variable cuantitativa $X_k$ es:
+
+```{=tex}
+\begin{gather*}
+Curtosis(X_k) = \dfrac{\overline{x_k}_{4}}{S(X_k)^{4}}
+\end{gather*}
+```
+Donde: \begin{gather*}
+\overline{x_k}_{4}=\frac{1}{n}\sum_{i=1}^{n} (X_i)^{4} 
+\end{gather*}
+
+\
+
+### Propiedades del coeficiente de Courtosis
+
+El **coeficiente de curtosis** mide principalemte el **grado de
+apuntamiento** de la distribucion de las observaciones de una variable.
+
+-   Si $Curtosis(X_k) > 3$ $\Rightarrow$ la distribucion de $X_k$ es
+    **mas apuntada** y con colas mas gruesas **que la distribución
+    normal**.
+
+-   Si $Curtosis(X_k) < 3$ $\Rightarrow$ la distribucion de $X_k$ es
+    **menos apuntada** y con colas menos gruesas **que la distribución
+    normal**.
+
+\
+
+### Curtosis en R
+
+```{r}
+library(moments)
+
+kurtosis(Datos$ingresos)
+```
+
+
+#### Comparación Apuntamiento:
+
+```{r, include=F}
+X4<- rnorm(5000, 0, 2)
+```
+
+```{r, include=F}
+kurtosis(X4)
+```
+
+```{r, include=F}
+X5<-rnorm(5000, 0 , 1)
+```
+
+```{r, include=F}
+kurtosis(X5)
+```
+
+```{r, include=F}
+df<-as.data.frame(cbind(c(X4,X5), grupo=c(rep(1,5000), rep(2,5000))))
+```
+
+```{r, echo=F, message=FALSE}
+ggplot(data = df , aes(x=V1, fill=factor(grupo)))+
+geom_histogram(aes(y = after_stat(count / sum(count))) , color="black")+
+  facet_wrap(grupo~.)+
+ scale_y_continuous( n.breaks = 15 )+
+  scale_x_continuous(n.breaks = 12)+
+  ggtitle("Comparación apuntamiento de distribuciones")+
+   scale_fill_discrete(labels = c("Menos Apuntada", "Mas Apuntada"))+
+  guides(fill = guide_legend(title = " "),
+         colour = guide_legend(title = " "))+
+  xlab("")+
+  ylab("Frecuencias Relativas")
+```
+
+\
+
+# Tablas de Frecuencias Relativas Conjuntas
+
+\
+
+## Tablas de Frecuencias Relativas Conjuntas para 2 variables
+
+\
+
+Vamos a crear una función en R a la que le metemos un par de variables y
+nos devuelve una tabla con las frecuencias relativas conjuntas de las
+dos variables.
+
+\
+
+Las caracteristicas de la función son las siguientes:
+
+-   **Entrada:**  matriz de datos $X$
+
+-   **Entrada:**  variables $V1$ y $V2$ de $X$
+
+-   $V1$ y $V2$ deben estar cargadas en R como vectores
+
+-   $V1$ y $V2$ pueden ser variables categoricas o cuantitativas
+    categorizadas
+
+-   El recorrido de $V1$ tiene que ser $0:p1$ , con $p1=1,2,3,...$
+
+-   El recorrido de $V2$ tiene que ser $0:p2$ , con $p2=1,2,3,...$
+
+-   **Entrada:**  $p1$ , $p2$
+
+-   $V1$ es la variable de la parte superior (columnas) de la tabla
+
+-   $V2$ es la variable de la parte inferior (filas) de la tabla
+
+\
+
+```{r, message=FALSE}
+Tabla_Frecuencias_Relativas_Conjuntas_2_Variables <- function(X, V1, V2, p1, p2){
+
+tabla<- matrix(NA, nrow=p2+1, ncol=p1+1 )
+
+for(i in 0:p2){
+  for(j in 0:p1){
+    
+tabla[i+1,j+1] <- ( dim( ( X %>% select(V1,V2) %>% filter(V1==j & V2==i) ) )[1] / dim(X)[1] )
+  }
+}
+
+rownames(tabla)<-0:p2
+colnames(tabla)<-0:p1
+ 
+print("V1 esta en la parte superior (columnas) de la tabla y V2 en la parte inferior (filas)")
+
+tabla <- as.data.frame(tabla)
+
+return(tabla) 
+}
+```
+
+\
+
+**Ejemplo 1:** Dos variables categoricas
+
+```{r, message=FALSE}
+Datos$edad <- recode(Datos$edad, "1"="0", "2"="1", "3"="2", "4"="3")
+Datos$edad<- as.double( Datos$edad )
+edad<-Datos$edad
+
+Datos$genero <- recode(Datos$genero, "1"="0", "2"="1" )
+Datos$genero <- as.double( Datos$genero )
+genero <- Datos$genero
+
+Tabla_Frecuencias_Relativas_Conjuntas_2_Variables(X=Datos, V1=edad , V2=genero, p1=3, p2=1 )
+```
+
+
+Por ejemplo, la proporción de individuos que son hombres (genero=0) y mayores de 60 años (edad=3) es 0.107
+
+\
+
+**Ejemplo 2:** Una variable categorica y otra cuantitativa
+
+Lo primero es categorizar la variable cuantitativa, para ello aplicamos
+una regla facil de categorizacion como la de la media
+
+```{r}
+L<- c(min(Datos$ingresos), mean(Datos$ingresos), max(Datos$ingresos))
+
+b<-cut(Datos$ingresos , breaks = L , include.lowest = T)
+
+ingresos_categorizados_regla_media <- recode(b, "[-1e+03,1.41e+04]"=0 , "(1.41e+04,5.85e+04]"=1)
+```
+
+Hay que añadir la variable *ingresos* categorizada a la matriz de datos
+
+```{r}
+Datos <- cbind(Datos, ingresos_categorizados_regla_media)
+```
+
+```{r}
+Tabla_Frecuencias_Relativas_Conjuntas_2_Variables(X=Datos, V1=ingresos_categorizados_regla_media , V2=genero, p1=1, p2=1 )
+```
+
+Por ejemplo, la proporción de individuos que son hombres (genero=0) con ingresos superiores  a la media (ingresos_categorizados_regla_media=1)  es 0.21
+
+Comprobación:
+
+```{r}
+# Calculamos manualmente la entrada (V1=0, V2=0)
+
+ ( dim( ( Datos %>% select(ingresos_categorizados_regla_media, genero) %>% filter(ingresos_categorizados_regla_media==0 & genero==0) ) )[1] / dim(Datos)[1] )
+```
+
+Para dos variables cuantitativas seria un procedimiento analogo.
+
+\
+
+## Tablas de Frecuencias Relativas Conjuntas para 3 variables:
+
+\
+
+Vamos a crear una función en R a la que le metemos tres variables y nos
+devuelve una tabla con las frecuencias relativas conjuntas de las tres
+variables, pero considerando un valor fijo de una de ellas.
+
+\
+
+Las caracteristicas de la función son las siguientes:
+
+-   **Entrada:**  matriz de datos $X$
+
+-   **Entrada:**  variables $V1$ , $V2$ y $V3$ de $X$
+
+-   $V1$ , $V2$ y $V3$ deben estar cargadas en R como vectores
+
+-   $V1$ , $V2$ y $V3$ pueden ser variables categoricas o cuantitativas
+    categorizadas
+
+-   El recorrido de $V1$ tiene que ser $0:p1$ , con $p1=1,2,3,...$
+
+-   El recorrido de $V2$ tiene que ser $0:p2$ , con $p2=1,2,3,...$
+
+-   El recorrido de $V3$ tiene que ser $0:p2$ , con $p3=1,2,3,...$
+
+-   **Entrada:**  $p1$ , $p2$, $p3$
+
+-   $V1$ es la variable de la parte superior (columnas) de la tabla
+
+-   $V2$ es la variable de la parte inferior (filas) de la tabla
+
+-   $V3$ es la variable cuyo valor se fija
+
+-   **Entrada**  el valor fijado de $V3$ (*valor_fijado_V3*)
+
+\
+
+```{r}
+Tabla_Frecuencias_Relativas_Conjuntas_3_Variables <- function(X, V1, V2, p1, p2, V3, valor_fijado_V3){
+
+tabla<- matrix(NA, nrow=p2+1, ncol=p1+1 )
+
+    
+for(i in 0:p2){
+  for(j in 0:p1){
+   
+    tabla[i+1,j+1] <- ( dim( ( X  %>% filter( V1==j & V2==i & V3==valor_fijado_V3 ) ) )[1] / dim(X)[1] )
+
+  }
+}
+ rownames(tabla)<-0:p2
+ colnames(tabla)<-0:p1
+ 
+ print("Tabla de contingencia conjunta entre las variables V1 , V2 y V3, donde V1 esta en la parte superior (columnas) de la tabla y V2 en la inferior (filas), y V3 toma siempre un mismo valor fijado")
+ 
+ tabla <- as.data.frame(tabla)
+ 
+ return(tabla) 
+}
+
+```
+
+\
+
+**Ejemplo:** una variable cuantitativa y dos variables categoricas
+
+```{r}
+Tabla_Frecuencias_Relativas_Conjuntas_3_Variables(X=Datos, V1= ingresos_categorizados_regla_media , V2= genero , p1=1, p2=1, V3= edad, valor_fijado_V3=3)
+```
+
+Por ejemplo, la proporción de individuos que son hombres (genero=0) con ingresos superiores  a la media (ingresos_categorizados_regla_media=1) y mayores de 60 años (edad=3) es 0.03
+
+Comprobación:
+
+```{r}
+# Calculamos manualmente la entrada (V1=0, V2=0, V3=3)
+
+( dim( ( Datos  %>% filter( ingresos_categorizados_regla_media==0 & genero==0 & edad==3 ) ) )[1] / dim(Datos)[1] )
+```
+
+\
+
+Se puede extender esta idea a mas dimensiones (4,5,6... variables),
+aunque no es habitual un analisis con mas de 3 varibles.
+
+\
+
+# Tabla de Frecuencias Relativas Condicionadas
+
+\
+
+## Tabla de Frecuencias Relativas Condicionadas con 2 variables
+
+\
+
+La idea es obtener una tabla de frecuencias relativas para 2 variables,
+$V1$ y $V2$, donde $V1$ condiciona a $V2$ , $(V2 | V1)$.
+
+\
+
+Las caracteristicas de la función son las siguientes:
+
+-   **Entrada:**  matriz de datos $X$
+
+-   **Entrada:**  variable $V1$
+
+-   **Entredas**  $V2\_indice$ es el indice de la variable V2 , si la
+    variable $V2$ ocupa la columna 6 en $X$, entonces V2_indice=6
+
+-   $V1$ debe estar cargada en R como vector
+
+-   $V1$ y $V2$ pueden ser variables categoricas o cuantitativas
+    categorizadas
+
+-   El recorrido de $V1$ tiene que ser $0:p1$ , con $p1=1,2,3,...$
+
+-   El recorrido de $V2$ tiene que ser $0:p2$ , con $p2=1,2,3,...$
+
+-   **Entrada:**  $p1$ y $p2$
+
+-   $V1$ es la variable que **condiciona**, la de la parte superior
+    (columnas) de la tabla
+
+-   $V2$ es la variable de la parte inferior (filas) de la tabla
+
+\
+
+```{r}
+Tabla_Frecuencias_Relativas_Condicionadas_2_Variables <- function(X, V1, V2_indice, p1, p2 ){
+
+tabla<- matrix(NA, nrow=p2+1, ncol=p1+1 )
+
+for(i in 0:p2){
+  for(j in 0:p1){
+  
+    X_new <- X %>% filter( V1==j)
+     
+    V2_new<- X_new[, V2_indice]
+    
+    tabla[i+1,j+1] <- (dim( ( X_new  %>% filter(V2_new==i) ) )[1] / dim(X_new)[1])
+  }
+}
+
+ rownames(tabla)<-0:p2
+ colnames(tabla)<-0:p1
+ 
+print(" V1  es la variable que condiciona y esta en la parte superior (columnas) de la tabla y  V2 en la inferior (filas)")
+ 
+ tabla <- as.data.frame(tabla)
+
+ return(tabla) 
+}
+```
+
+
+
+```{r}
+Tabla_Frecuencias_Relativas_Condicionadas_2_Variables(Datos, V1=genero, V2_indice=9, p1=1, p2=1)
+
+# La variable V2 es la de indice 9 de la matriz de datos, que es la variable ingresos categorizada con la regla de la media. 
+```
+
+Por ejemplo, la proporción de personas con ingresos superiores  a la media (ingresos_categorizados_regla_media=1), dentro del grupo de los hombres (genero=0)  es 0.43
+
+
+
+Comprobación:
+
+```{r}
+# Comprobamos cual es la variable V2 usada en el codigo anterior
+
+names(Datos %>% select(9))
+```
+
+```{r}
+# Calculamos manualmente la entrada (V1=0, V2=0)
+
+dim((Datos %>% filter(genero==0))%>% filter(ingresos_categorizados_regla_media==0))[1] / dim((Datos %>% filter(genero==0)))[1]
+```
+
+## Tablas de Frecuencias Relativas Condicionadas con 3 variables
+
+La idea es obtener una tabla de frecuencias relativas para 3 variables,
+$V1$ , $V2$ y $V3$, donde $V1$ y $V3$ condicionan a $V2$ ,
+$(V2 | V1 , V3 )$, y $V3$ tiene un valor fijado.
+
+\
+
+Las caracteristicas de la función son las siguientes:
+
+-   **Entrada:**  matriz de datos $X$
+
+-   **Entrada:**  variable $V1$ y $V3$
+
+-   **Entredas**  $V2\_indice$ es el indice de la variable V2 , si la
+    variable $V2$ ocupa la columna 6 en $X$, entonces V2_indice=6
+
+-   $V1$ y $V3$ debe estar cargada en R como vector
+
+-   $V1$, $V2$ y $V3$ pueden ser variables categoricas o cuantitativas
+    categorizadas
+
+-   El recorrido de $V1$ tiene que ser $0:p1$ , con $p1=1,2,3,...$
+
+-   El recorrido de $V2$ tiene que ser $0:p2$ , con $p2=1,2,3,...$
+
+-   El recorrido de $V3$ tiene que ser $0:p3$ , con $p3=1,2,3,...$
+
+-   **Entrada:**  $p1$ , $p2$
+
+-   $V1$ es una de las dos variables que **condicionan**, la de la parte
+    superior (columnas) de la tabla
+
+-   $V3$ es la otra variable que condiciona, pero tiene un valor fijado
+
+-   $V2$ es la variable de la parte inferior (filas) de la tabla
+
+\
+
+```{r}
+Tabla_Frecuencias_Relativas_Condicionadas_3_Variables <- function(X, V1, V2_indice, p1, p2 , V3, valor_fijado_V3 ){
+
+tabla<- matrix(NA, nrow=p2+1, ncol=p1+1 )
+
+ 
+for(i in 0:p2){
+  for(j in 0:p1){
+  
+     X_new <- X %>% filter( V1==j & V3==valor_fijado_V3)
+     
+     V2_new<- X_new[, V2_indice]
+    
+     tabla[i+1,j+1] <- ( dim( ( X_new  %>% filter(V2_new==i) ) )[1] / dim(X_new)[1] )
+
+  }
+}
+ rownames(tabla)<-0:p2
+ colnames(tabla)<-0:p1
+ 
+ print("V1 y V3 condicionan a V2, V3 toma valor fijo, V1 está en la parte superior (columnas) de la tabla y V2 en la inferior (filas)")
+ 
+ tabla <- as.data.frame(tabla)
+ 
+ return(tabla) 
+}
+
+```
+
+```{r}
+Tabla_Frecuencias_Relativas_Condicionadas_3_Variables(Datos ,V1=genero, V2_indice=9, p1=1, p2=1, V3=edad, valor_fijado_V3 =3 )
+```
+
+
+Por ejemplo, la proporción de personas con ingresos superiores  a la media (ingresos_categorizados_regla_media=1), dentro del grupo de los hombres (genero=0) mayores de 60 años (edad=3)  es 0.28
+
+
+Comprobación:
+
+```{r}
+# Comprobamos cual es la variable V2 usada en el codigo anterior
+
+names(Datos %>% select(9))
+```
+
+```{r}
+# Calculamos manualmente la entrada (V1=0, V2=0, V3=3)
+
+dim((Datos %>% filter(genero==0 & edad==3) )%>% filter(ingresos_categorizados_regla_media==0))[1] / dim((Datos %>% filter(genero==0 & edad==3) ))[1]
+```
