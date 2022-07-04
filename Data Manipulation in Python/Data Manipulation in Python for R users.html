@@ -14259,7 +14259,60 @@ a.anchor-link {
 
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Data-Manipulation-in-Python-for-R-users">Data Manipulation in Python for R users<a class="anchor-link" href="#Data-Manipulation-in-Python-for-R-users">&#182;</a></h1><p>This article is about data manipulation in Python, but it´s made thinking in data manipulation in R. So here we are not going to be focus on data manipulation with Pandas, that is the classic python package for that propose. Instead of that we will use a package inspired in dplyr R package, that´s probably the most used R packages for data manipulation.</p>
+<h1 id="Data-Manipulation-in-Python-for-R-users">Data Manipulation in Python for R users<a class="anchor-link" href="#Data-Manipulation-in-Python-for-R-users">&#182;</a></h1><h2 id="Indice:">Indice:<a class="anchor-link" href="#Indice:">&#182;</a></h2><ul>
+<li><a href="#1">Head and Tail</a></li>
+<li><a href="#2">Selecting</a></li>
+<li><a href="#3">Sampling</a></li>
+<li><a href="#4">Filtering</a></li>
+<li><a href="#5">Mutate</a></li>
+<li><a href="#6">Arrange</a></li>
+<li><a href="#7">Rename</a></li>
+<li><a href="#8">Gather</a></li>
+<li><a href="#9">Spread</a></li>
+<li><a href="#10">Separate</a></li>
+<li><a href="#11">Unite</a></li>
+<li><a href="#12">Joins</a></li>
+<li><ul>
+<li><a href="#13">Inner Join</a></li>
+</ul>
+</li>
+<li><ul>
+<li><a href="#14">Full Join</a></li>
+</ul>
+</li>
+<li><ul>
+<li><a href="#15">Left Join</a></li>
+</ul>
+</li>
+<li><ul>
+<li><a href="#16">Right Join</a></li>
+</ul>
+</li>
+<li><ul>
+<li><a href="#17">Semi Join</a></li>
+</ul>
+</li>
+<li><ul>
+<li><a href="#18">Anti Join</a></li>
+</ul>
+</li>
+<li><ul>
+<li><a href="#19">Union</a></li>
+</ul>
+</li>
+<li><ul>
+<li><a href="#20">Intersect</a></li>
+</ul>
+</li>
+<li><ul>
+<li><a href="#21">Difference</a></li>
+</ul>
+</li>
+<li><a href="#22">Concatenate</a></li>
+<li><a href="#23">Group and Summarize</a></li>
+<li><a href="#24">Other usuful functions </a></li>
+</ul>
+<p>This article is about data manipulation in Python, but it´s made thinking in data manipulation in R. So here we are not going to be focus on data manipulation with Pandas, that is the classic python package for that propose. Instead of that we will use a package inspired in dplyr R package, that´s probably the most used R packages for data manipulation.</p>
 <p><code>Dfply</code> is a Python package whose main goal is replicate dplyr R package. There are other Python packages that allows it, as <code>dplython</code>, but <code>Dfply</code>  is more developed.</p>
 
 </div>
@@ -14681,6 +14734,11 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Head-and-Tail-">Head and Tail <a class="anchor" id="1" /><a class="anchor-link" href="#Head-and-Tail-">&#182;</a></h2>
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>We can see the head of the data-set:</p>
 
 </div>
@@ -15096,6 +15154,11 @@ a.anchor-link {
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Selecting-">Selecting <a class="anchor" id="2" /><a class="anchor-link" href="#Selecting-">&#182;</a></h2>
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
@@ -18247,6 +18310,11 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Sampling-">Sampling <a class="anchor" id="3" /><a class="anchor-link" href="#Sampling-">&#182;</a></h2>
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>We can extraxt a sample of the rows of a data-set as follows:</p>
 
 </div>
@@ -19036,6 +19104,11 @@ a.anchor-link {
 
 </div>
 
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Filtering-">Filtering <a class="anchor" id="4" /><a class="anchor-link" href="#Filtering-">&#182;</a></h2>
+</div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
@@ -20097,6 +20170,11 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Mutate-">Mutate <a class="anchor" id="5" /><a class="anchor-link" href="#Mutate-">&#182;</a></h2>
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>We can add a new variable to the data-set as follows:</p>
 
 </div>
@@ -20608,6 +20686,11 @@ a.anchor-link {
 
 </div>
 
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Arrange-">Arrange <a class="anchor" id="6" /><a class="anchor-link" href="#Arrange-">&#182;</a></h2>
+</div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
@@ -21307,6 +21390,11 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Rename-">Rename <a class="anchor" id="7" /><a class="anchor-link" href="#Rename-">&#182;</a></h2>
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>We can rename the names of variables as follows:</p>
 
 </div>
@@ -21659,6 +21747,11 @@ a.anchor-link {
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Gather-">Gather <a class="anchor" id="8" /><a class="anchor-link" href="#Gather-">&#182;</a></h2>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
@@ -22073,6 +22166,11 @@ a.anchor-link {
 
 </div>
 
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Spread-">Spread <a class="anchor" id="9" /><a class="anchor-link" href="#Spread-">&#182;</a></h2>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
@@ -22341,6 +22439,11 @@ a.anchor-link {
 
 </div>
 
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Separate-">Separate <a class="anchor" id="10" /><a class="anchor-link" href="#Separate-">&#182;</a></h2>
+</div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
@@ -23039,6 +23142,11 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Unite-">Unite <a class="anchor" id="11" /><a class="anchor-link" href="#Unite-">&#182;</a></h2>
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>Unite several columns in one column:</p>
 
 </div>
@@ -23486,6 +23594,11 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Joins-">Joins <a class="anchor" id="12" /><a class="anchor-link" href="#Joins-">&#182;</a></h2>
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>We can join data-sets as well:</p>
 
 </div>
@@ -23768,8 +23881,7 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Inner join:</p>
-
+<h3 id="Inner-Join-">Inner Join <a class="anchor" id="13" /><a class="anchor-link" href="#Inner-Join-">&#182;</a></h3>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
@@ -23862,8 +23974,7 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Full join:</p>
-
+<h3 id="Full-Join-">Full Join <a class="anchor" id="14" /><a class="anchor-link" href="#Full-Join-">&#182;</a></h3>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
@@ -23972,8 +24083,7 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Left join:</p>
-
+<h3 id="Left-Join-">Left Join <a class="anchor" id="15" /><a class="anchor-link" href="#Left-Join-">&#182;</a></h3>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
@@ -24250,8 +24360,7 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Right join:</p>
-
+<h3 id="Right-Join-">Right Join <a class="anchor" id="16" /><a class="anchor-link" href="#Right-Join-">&#182;</a></h3>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
@@ -24424,8 +24533,7 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Semi join:</p>
-
+<h3 id="Semi-Join-">Semi Join <a class="anchor" id="17" /><a class="anchor-link" href="#Semi-Join-">&#182;</a></h3>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
@@ -24510,8 +24618,7 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Anti join:</p>
-
+<h3 id="Anti-Join-">Anti Join <a class="anchor" id="18" /><a class="anchor-link" href="#Anti-Join-">&#182;</a></h3>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
@@ -24616,8 +24723,7 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Union:</p>
-
+<h3 id="Union-">Union <a class="anchor" id="19" /><a class="anchor-link" href="#Union-">&#182;</a></h3>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
@@ -24703,8 +24809,7 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Intersect:</p>
-
+<h3 id="Intersect-">Intersect <a class="anchor" id="20" /><a class="anchor-link" href="#Intersect-">&#182;</a></h3>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
@@ -24780,8 +24885,7 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Difference:</p>
-
+<h3 id="Difference-">Difference <a class="anchor" id="21" /><a class="anchor-link" href="#Difference-">&#182;</a></h3>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
@@ -24919,6 +25023,11 @@ a.anchor-link {
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Concatenate-">Concatenate <a class="anchor" id="22" /><a class="anchor-link" href="#Concatenate-">&#182;</a></h2>
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
@@ -25609,6 +25718,11 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Group-and-Summarize-">Group and Summarize <a class="anchor" id="23" /><a class="anchor-link" href="#Group-and-Summarize-">&#182;</a></h2>
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>We can group and summarize as follows:</p>
 
 </div>
@@ -25950,8 +26064,7 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Other usuful functions:</p>
-
+<h2 id="Other-usuful-functions-">Other usuful functions <a class="anchor" id="24" /><a class="anchor-link" href="#Other-usuful-functions-">&#182;</a></h2>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
