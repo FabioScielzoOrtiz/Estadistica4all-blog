@@ -1667,27 +1667,7 @@ Esta tabla nos revela informacion muy util, como por ejemplo que hay 14 observac
 
 \
 
-Un *histograma* es un gráfico de barras apiladas empleado para
-representar las frecuencias absolutas o relativas de una variable
-cuantitativa.
 
-Para representar el histograma de una variable cuantitativa, se
-necesitan las frecuencias absolutas o relativas de dicha variable, por
-lo que se necesitan obtener los intervalos de categorizacion de la
-variable cuantitativa. Para ello se pueden seguir las reglas de
-categorización antes vistas.
-
-Una vez que tenemos los intervalos de categorizacion de la variable
-cuantitativa, el histograma se construye de la siguiente manera:
-
-En el *eje x* contiene el recorrido de la variable cuantitativa. En el
-*eje y* las frecuencias absolutas o relativas de los intervalos de
-categorización en la variable cuantitativa.
-
-En el *interior* del gráfico hay barras apiladas, tantas como
-intervalos, y la $i$-esima barra está asignada al intervalo $i$-esimo,
-con una altura igual a la frecuencia absoluta o relativa del intervalo
-i-esimo en la variable cuantitativa.
 
 Generamos un histograma de la variable cuantitativa *ingresos* usando
 los intervalos de categorización que se obtienen con la regla de Scott.
