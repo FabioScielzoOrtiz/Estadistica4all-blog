@@ -14601,6 +14601,19 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>The url where the data-set is:</p>
+<p><a href="https://raw.githubusercontent.com/FabioScielzoOrtiz/Estadistica4all-blog/main/Descriptive%20Statisitcs%20in%20Python%20and%20R/datosAragon.csv">https://raw.githubusercontent.com/FabioScielzoOrtiz/Estadistica4all-blog/main/Descriptive%20Statisitcs%20in%20Python%20and%20R/datosAragon.csv</a></p>
+
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -14856,7 +14869,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">plotnine</span> <span class="kn">import</span> <span class="n">ggplot</span><span class="p">,</span> <span class="n">aes</span><span class="p">,</span> <span class="n">geom_line</span><span class="p">,</span> <span class="n">geom_point</span><span class="p">,</span> <span class="n">geom_histogram</span><span class="p">,</span> <span class="n">geom_bar</span><span class="p">,</span> <span class="n">geom_boxplot</span><span class="p">,</span> <span class="n">scale_y_continuous</span><span class="p">,</span> <span class="n">scale_x_continuous</span><span class="p">,</span> <span class="n">labs</span><span class="p">,</span> <span class="n">after_stat</span><span class="p">,</span>  <span class="n">geom_vline</span><span class="p">,</span> <span class="n">scale_color_manual</span><span class="p">,</span> <span class="n">theme_gray</span><span class="p">,</span> <span class="n">theme_xkcd</span><span class="p">,</span> <span class="n">scale_color_identity</span><span class="p">,</span> <span class="n">geom_hline</span><span class="p">,</span> <span class="n">facet_wrap</span><span class="p">,</span> <span class="n">scale_fill_discrete</span><span class="p">,</span> <span class="n">scale_fill_manual</span><span class="p">,</span>  <span class="n">scale_fill_hue</span><span class="p">,</span> <span class="n">guides</span><span class="p">,</span> <span class="n">guide_legend</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">plotnine</span> <span class="kn">import</span> <span class="n">ggplot</span><span class="p">,</span> <span class="n">aes</span><span class="p">,</span> <span class="n">geom_line</span><span class="p">,</span> <span class="n">geom_point</span><span class="p">,</span> <span class="n">geom_histogram</span><span class="p">,</span> <span class="n">geom_bar</span><span class="p">,</span> <span class="n">geom_boxplot</span><span class="p">,</span> <span class="n">scale_y_continuous</span> 
+<span class="kn">from</span> <span class="nn">plotnine</span> <span class="kn">import</span> <span class="n">scale_x_continuous</span><span class="p">,</span> <span class="n">labs</span><span class="p">,</span> <span class="n">after_stat</span><span class="p">,</span>  <span class="n">geom_vline</span><span class="p">,</span> <span class="n">scale_color_manual</span><span class="p">,</span> <span class="n">theme_gray</span><span class="p">,</span> <span class="n">theme_xkcd</span>
+<span class="kn">from</span> <span class="nn">plotnine</span> <span class="kn">import</span> <span class="n">scale_color_identity</span><span class="p">,</span> <span class="n">geom_hline</span><span class="p">,</span> <span class="n">facet_wrap</span><span class="p">,</span> <span class="n">scale_fill_discrete</span><span class="p">,</span> <span class="n">scale_fill_manual</span>
+<span class="kn">from</span> <span class="nn">plotnine</span> <span class="kn">import</span> <span class="n">scale_fill_hue</span><span class="p">,</span> <span class="n">guides</span><span class="p">,</span> <span class="n">guide_legend</span>
 </pre></div>
 
      </div>
@@ -14889,7 +14905,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <span class="o">+</span>  <span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;ingnorm&#39;</span> <span class="p">,</span> <span class="n">y</span> <span class="o">=</span>  <span class="n">after_stat</span><span class="p">(</span><span class="s1">&#39;width*density&#39;</span><span class="p">))</span>
 <span class="o">+</span> <span class="n">geom_histogram</span><span class="p">(</span> <span class="n">bins</span> <span class="o">=</span> <span class="mi">33</span> <span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
 <span class="o">+</span>  <span class="n">labs</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="s2">&quot;Ingresos&quot;</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="s2">&quot;Frecuencia Relativa&quot;</span><span class="p">)</span>
-<span class="o">+</span> <span class="n">scale_x_continuous</span><span class="p">(</span> <span class="n">breaks</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data_Python</span><span class="p">[</span><span class="s1">&#39;ingnorm&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">data_Python</span><span class="p">[</span><span class="s1">&#39;ingnorm&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span> <span class="p">,</span> <span class="mi">8000</span><span class="p">)</span> <span class="p">)</span> 
+<span class="o">+</span> <span class="n">scale_x_continuous</span><span class="p">(</span> <span class="n">breaks</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data_Python</span><span class="p">[</span><span class="s1">&#39;ingnorm&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="p">,</span> 
+                           <span class="nb">int</span><span class="p">(</span><span class="n">data_Python</span><span class="p">[</span><span class="s1">&#39;ingnorm&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span> <span class="p">,</span> <span class="mi">8000</span><span class="p">)</span> <span class="p">)</span> 
 <span class="o">+</span> <span class="n">scale_y_continuous</span><span class="p">(</span> <span class="n">breaks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.17</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">)</span> <span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
@@ -14932,7 +14949,7 @@ class="
 
 
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>&lt;ggplot: (92609522158)&gt;</pre>
+<pre>&lt;ggplot: (122008007244)&gt;</pre>
 </div>
 
 </div>
@@ -15018,7 +15035,7 @@ class="
 
 
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>&lt;ggplot: (92609396059)&gt;</pre>
+<pre>&lt;ggplot: (122007958200)&gt;</pre>
 </div>
 
 </div>
